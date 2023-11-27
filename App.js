@@ -1,7 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
 import RainAnimation from './app/components/RainAnimation';
-import useLocation from './app/refs/useLocation';
+import useLocation from './app/hooks/useLocation';
+import CurrentWeatherScreen from './app/screens/CurrentWeatherScreen';
 
 export default function App () {
  
@@ -10,13 +11,13 @@ export default function App () {
     const location = await useLocation();
     console.log(location)
   }
-  getLocation();
+  // getLocation();
   
-//User the location to get the current weather using OpenWeatherMap's API
+//Use the location to get the current weather using OpenWeatherMap's API
 
   return (
     <View className=" flex-grow ">
-      
+      <CurrentWeatherScreen/>
       <StatusBar style="auto" />
     </View>
   );
