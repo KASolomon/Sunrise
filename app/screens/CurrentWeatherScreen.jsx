@@ -11,7 +11,7 @@ import apiEndpoints from "../config/apiEndpoints";
 import { useEffect } from "react";
 import useLocation from "../hooks/useLocation";
 import pass from "../config/pass";
-import { Button } from "@rneui/base";
+import { Button, Tab, TabView } from "@rneui/base";
 import AppText from "../components/AppText";
 import TempText from "../components/TempText";
 import {
@@ -25,8 +25,10 @@ import {
 export default function CurrentWeatherScreen() {
   const [location, setLocation] = useState();
   const [currentDate, setCurrentDate] = useState();
+  const [tabIndex, setTabIndex] = useState();
   const [up, setUp] = useState(false);
   const scrollRef = useRef(null);
+
   const UVI = "Low";
   const iconColor = "rgba(0,0,0,0.7)";
   const windSpeed = "23 km/h";
@@ -79,7 +81,11 @@ export default function CurrentWeatherScreen() {
       className="flex-grow px-4  pt-14"
     >
       <View className="flex-grow">
-        <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          ref={scrollRef}
+          showsVerticalScrollIndicator={false}
+          // style={{ flex: 1 }}
+        >
           <View
             className="my-6 p-5 flex rounded-xl justify-center "
             style={{ backgroundColor: viewBackground }}
@@ -163,6 +169,7 @@ export default function CurrentWeatherScreen() {
           <Button
             type="clear"
             size="sm"
+            className="mb-6"
             TouchableComponent={TouchableWithoutFeedback}
             icon={
               up ? (
@@ -173,9 +180,73 @@ export default function CurrentWeatherScreen() {
             }
             onPress={handleForecastScroll}
           />
+          {/* forecast views */}
+          <Tab
+            value={tabIndex}
+            onChange={(e) => {
+              setTabIndex(e);
+            }}
+            containerStyle={{backgroundColor: "rgba(0, 0, 0, 0.2)"}}
+            titleStyle={{ color: "white",  }}
+            indicatorStyle={{
+              backgroundColor: "#404040",
+            }}
+            scrollable={true}
+          >
+            <Tab.Item
+              title={"Hourly Forecast"}
+              icon={{
+                type: "simple-line-icon",
+                name: "clock",
+                color: "white",
+              }}
+              iconPosition="left"
+            />
+            <Tab.Item
+              title={"Weekly Forecast"}
+              icon={{
+                type: "ionicon",
+                name: "calendar-outline",
+                color: "white",
+              }}
+              iconPosition="left"
+            />
+          </Tab>
+          <TabView
+            value={tabIndex}
+            onChange={setTabIndex}
+            // tabItemContainerStyle={{ overflow: "scroll" }}
+            containerStyle={{
+              paddingBottom: "80%",
+              maxHeight: "60%",
+              backgroundColor: "rgba(0, 0, 0, 0.2)",
+            }}
+            animationType="spring"
+          >
+            <TabView.Item>
+              <View>
+                <AppText>Hourly Forecast</AppText>
+                <AppText>Hourly Forecast</AppText>
+                <AppText>Hourly Forecast</AppText>
+                <AppText>Hourly Forecast</AppText>
+                <AppText>Hourly Forecast</AppText>
+                <AppText>Hourly Forecast</AppText>
+                <AppText>Hourly Forecast</AppText>
+                <AppText>Hourly Forecast</AppText>
+                <AppText>Week 32334 Forecast</AppText>
+              </View>
+            </TabView.Item>
+            <TabView.Item>
+              <AppText>Weekly Forecast</AppText>
+            </TabView.Item>
+          </TabView>
+          {/* <View className="bg-orange-400 min-h-fit flex">
+          </View> */}
+
+          {/* THE SCROLLVIEW CUTS SOME OF THE CONTENT OFF AFTER SETTING TABVIEW HEIGHTS IN PERCENTAGES. USING NORMAL PIXELS STOPS THE PROBLEM. Use paddingBottom in percentage if the percentage is required */}
+      <Button onPress={getCurrentWeather}>Get Weather</Button>
         </ScrollView>
       </View>
-      {/* <Button onPress={getCurrentWeather}>Get Weather</Button> */}
     </ImageBackground>
   );
 }
