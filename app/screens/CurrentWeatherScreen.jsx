@@ -1,5 +1,11 @@
-import { View, Text, ImageBackground } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  Text,
+  ImageBackground,
+  TouchableWithoutFeedback,
+  ScrollView,
+} from "react-native";
+import React, { useRef, useState } from "react";
 import axiosBase from "../config/axiosBase";
 import apiEndpoints from "../config/apiEndpoints";
 import { useEffect } from "react";
@@ -19,7 +25,8 @@ import {
 export default function CurrentWeatherScreen() {
   const [location, setLocation] = useState();
   const [currentDate, setCurrentDate] = useState();
-
+  const [up, setUp] = useState(false);
+  const scrollRef = useRef(null);
   const UVI = "Low";
   const iconColor = "rgba(0,0,0,0.7)";
   const windSpeed = "23 km/h";
@@ -32,6 +39,12 @@ export default function CurrentWeatherScreen() {
     : "../../assets/pictures/sun.jpg";
 
   const viewBackground = "rgba(0, 0, 0, 0.2)";
+
+  const handleForecastScroll = () => {
+    scrollRef.current?.scrollTo({ y: up ? 450 : -300, animated: true });
+    setUp(!up);
+  };
+
   const getLocation = async () => {
     const currentLocation = await useLocation();
     setLocation(currentLocation);
@@ -63,82 +76,105 @@ export default function CurrentWeatherScreen() {
   return (
     <ImageBackground
       source={require(`${BACK_IMG}`)}
-      className="flex-grow px-4 pb-10 pt-20"
+      className="flex-grow px-4  pt-14"
     >
-      <View
-        className="my-6 p-5 flex rounded-xl justify-center "
-        style={{ backgroundColor: viewBackground }}
-      >
-        <View className=" justify-center flex-row">
-          <SimpleLineIcons
-            name="location-pin"
-            size={26}
-            color={"white"}
-            style={{ paddingRight: 6 }}
+      <View className="flex-grow">
+        <ScrollView ref={scrollRef} showsVerticalScrollIndicator={false}>
+          <View
+            className="my-6 p-5 flex rounded-xl justify-center "
+            style={{ backgroundColor: viewBackground }}
+          >
+            <View className=" justify-center flex-row">
+              <SimpleLineIcons
+                name="location-pin"
+                size={26}
+                color={"white"}
+                style={{ paddingRight: 6 }}
+              />
+              <AppText className={"text-white"}>Ayeduase</AppText>
+            </View>
+            <AppText className={"text-white text-center pt-4"}>
+              {currentDate}
+            </AppText>
+          </View>
+          <View className="justify-center">
+            <View className="flex-row  justify-center">
+              <TempText className="text-center">13</TempText>
+              <AppText
+                className="pl-1 text-base"
+                style={{ alignSelf: "center" }}
+              >
+                Feels Like {feelTemp}°
+              </AppText>
+            </View>
+            <View className="flex-row justify-center center-3">
+              <Ionicons
+                name="rainy-sharp"
+                size={45}
+                style={{
+                  color: "rgba(200,255,255,0.4)",
+                  borderColor: "rgba(0,123,255,0.9)",
+                }}
+              />
+              <AppText className={"text-xl"} style={{ alignSelf: "center" }}>
+                Rains
+              </AppText>
+            </View>
+          </View>
+          <View
+            className=" rounded-xl p-4 my-6"
+            style={{ backgroundColor: viewBackground }}
+          >
+            <View className="flex-row justify-between">
+              <View className="flex-row w-1/2">
+                <Entypo name="drop" size={45} color={iconColor} />
+                <AppText className="p-2" style={{ alignSelf: "center" }}>
+                  {humidity}
+                </AppText>
+              </View>
+
+              <View className="flex-row w-1/2">
+                <Fontisto
+                  name="wind"
+                  size={45}
+                  color={iconColor}
+                  className="p-2"
+                />
+                <AppText className="p-2" style={{ alignSelf: "center" }}>
+                  {windSpeed}
+                </AppText>
+              </View>
+            </View>
+            <View className="flex-row mt-5 ">
+              <View className="flex-row w-1/2">
+                <Feather name="cloud-drizzle" size={45} color={iconColor} />
+                <AppText className="p-2" style={{ alignSelf: "center" }}>
+                  {precipitation}
+                </AppText>
+              </View>
+              <View className="flex-row w-1/2">
+                <Ionicons name="sunny-sharp" size={45} />
+                <AppText className="p-2" style={{ alignSelf: "center" }}>
+                  {UVI}
+                </AppText>
+              </View>
+            </View>
+          </View>
+          <Button
+            type="clear"
+            size="sm"
+            TouchableComponent={TouchableWithoutFeedback}
+            icon={
+              up ? (
+                <Entypo name="chevron-down" size={25} color={"white"} />
+              ) : (
+                <Entypo name="chevron-up" size={25} color={"white"} />
+              )
+            }
+            onPress={handleForecastScroll}
           />
-          <AppText className={"text-white"}>Ayeduase</AppText>
-        </View>
-        <AppText className={"text-white text-center pt-4"}>
-          {currentDate}
-        </AppText>
+        </ScrollView>
       </View>
-
-      <View className="justify-center">
-        <View className="flex-row  justify-center">
-          <TempText className="text-center">13</TempText>
-          <AppText className="pl-1 text-base" style={{ alignSelf: "center" }}>
-            Feels Like {feelTemp}°
-          </AppText>
-        </View>
-        <View className="flex-row justify-center center-3">
-          <Ionicons
-            name="rainy-sharp"
-            size={45}
-            style={{
-              color: "rgba(200,255,255,0.4)",
-              borderColor: "rgba(0,123,255,0.9)",
-            }}
-          />
-          <AppText className={"text-xl"} style={{ alignSelf: "center" }}>
-            Rains
-          </AppText>
-        </View>
-      </View>
-      <View
-        className=" rounded-xl p-4 my-6"
-        style={{ backgroundColor: viewBackground }}
-      >
-        <View className="flex-row justify-between">
-          <View className="flex-row w-1/2">
-            <Entypo name="drop" size={45} color={iconColor} />
-            <AppText className="p-2" style={{ alignSelf: "center" }}>
-              {humidity}
-            </AppText>
-          </View>
-
-          <View className="flex-row w-1/2">
-            <Fontisto name="wind" size={45} color={iconColor} className="p-2" />
-            <AppText className="p-2" style={{ alignSelf: "center" }}>
-              {windSpeed}
-            </AppText>
-          </View>
-        </View>
-        <View className="flex-row mt-5 ">
-          <View className="flex-row w-1/2">
-            <Feather name="cloud-drizzle" size={45} color={iconColor} />
-            <AppText className="p-2" style={{ alignSelf: "center" }}>
-              {precipitation}
-            </AppText>
-          </View>
-          <View className="flex-row w-1/2">
-            <Ionicons name="sunny-sharp" size={45} />
-            <AppText className="p-2" style={{ alignSelf: "center" }}>
-              {UVI}
-            </AppText>
-          </View>
-        </View>
-      </View>
-
       {/* <Button onPress={getCurrentWeather}>Get Weather</Button> */}
     </ImageBackground>
   );
