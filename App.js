@@ -3,6 +3,8 @@ import { StyleSheet, View } from 'react-native';
 import RainAnimation from './app/components/RainAnimation';
 import useLocation from './app/hooks/useLocation';
 import CurrentWeatherScreen from './app/screens/CurrentWeatherScreen';
+import CachedImage from './app/components/CachedImage';
+import { genIconUrl } from './app/config/apiEndpoints';
 
 export default function App () {
  
@@ -16,7 +18,8 @@ export default function App () {
 //Use the location to get the current weather using OpenWeatherMap's API
 
   return (
-    <View className=" flex-grow ">
+    <View className=" flex-grow">
+      {/* <CachedImage imageUri={genIconUrl("03d")} /> */}
       <CurrentWeatherScreen/>
       <StatusBar style="auto" />
     </View>

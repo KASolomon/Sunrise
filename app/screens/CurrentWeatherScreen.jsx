@@ -5,9 +5,9 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
 } from "react-native";
-import React, { useRef, useState } from "react";
-import axiosBase from "../config/axiosBase";
-import apiEndpoints from "../config/apiEndpoints";
+import React, { useCallback, useRef, useState } from "react";
+import axiosBase, { realtime } from "../config/axiosBase";
+import apiEndpoints, { genIconUrl } from "../config/apiEndpoints";
 import { useEffect } from "react";
 import useLocation from "../hooks/useLocation";
 import pass from "../config/pass";
@@ -21,26 +21,77 @@ import {
   Fontisto,
   Feather,
 } from "@expo/vector-icons";
+import CachedImage from "../components/CachedImage";
 
+import Icon from "@svgr-iconkit/weather-icons";
+import { useColorScheme } from "nativewind";
+import axios from "axios";
+import { weatherCode } from "../config/weatherCodes";
+import { getUVIDescription } from "../config/utils";
 export default function CurrentWeatherScreen() {
+  const [weatherData, setWeatherData] = useState({
+    time: "2023-12-04T14:31:00Z",
+    values: {
+      cloudBase: null,
+      cloudCeiling: null,
+      cloudCover: 8,
+      dewPoint: 18.63,
+      freezingRainIntensity: 0,
+      humidity: 42,
+      precipitationProbability: 0,
+      pressureSurfaceLevel: 977.75,
+      rainIntensity: 0,
+      sleetIntensity: 0,
+      snowIntensity: 0,
+      temperature: 33.13,
+      temperatureApparent: 34.43,
+      uvHealthConcern: 1,
+      uvIndex: 3,
+      visibility: 13.13,
+      weatherCode: 1000,
+      windDirection: 112.5,
+      windGust: 3.5,
+      windSpeed: 1,
+    },
+  });
+
   const [location, setLocation] = useState();
   const [currentDate, setCurrentDate] = useState();
   const [tabIndex, setTabIndex] = useState();
   const [up, setUp] = useState(false);
   const scrollRef = useRef(null);
-
-  const UVI = "Low";
-  const iconColor = "rgba(0,0,0,0.7)";
-  const windSpeed = "23 km/h";
+  const [description, setDescription] = useState();
+  // Weather constants
+  const city = weatherData?.name;
+  const UVI = getUVIDescription(weatherData.values.uvIndex);
+  const windSpeed = weatherData?.values.windSpeed.toString() + "m/s";
   const dark = true;
-  const feelTemp = 10;
-  const humidity = "22%";
-  const precipitation = "95%";
+  const feelTemp = Math.floor(weatherData?.values.temperatureApparent);
+  const temp = Math.floor(weatherData?.values.temperature);
+  const humidity = weatherData?.values.humidity.toString() + "%";
+  const visibility = Math.floor(weatherData.values.visibility);
+  const pptProb =
+    Math.floor(weatherData.values.precipitationProbability).toString() + "%";
+  // const sunrise = new Date(weatherData?.sys.sunrise).toLocaleTimeString([], {
+  //   hour: "2-digit",
+  //   minute: "2-digit",
+  // });
+
+  // const sunset = new Date(weatherData?.sys.sunset).toLocaleTimeString([], {
+  //   hour: "2-digit",
+  //   minute: "2-digit",
+  // });
+
+  const getWeatherDescription = (code = 0) => {
+    const weatherDesc = weatherCode[code];
+    return weatherDesc;
+  };
+  const iconColor = "rgba(0,0,0,0.7)";
   const BACK_IMG = dark
     ? "../../assets/pictures/dark.jpeg"
     : "../../assets/pictures/sun.jpg";
 
-  const viewBackground = "rgba(0, 0, 0, 0.2)";
+  // const viewBackground = "rgb(0, 0, 0)";
 
   const handleForecastScroll = () => {
     scrollRef.current?.scrollTo({ y: up ? 450 : -300, animated: true });
@@ -51,12 +102,44 @@ export default function CurrentWeatherScreen() {
     const currentLocation = await useLocation();
     setLocation(currentLocation);
   };
-  const getCurrentWeather = async () => {
-    const result = await axiosBase.request({
-      url: apiEndpoints.currentWeather,
-      data: { lat: location.latitude, lon: location.longitude, appid: pass },
-    });
-    console.log(result);
+
+  const getRealtimeWeather = async (location, pass) => {
+    try {
+      const {
+        data: { data },
+      } = await axios.request({
+        url: `https://api.tomorrow.io/v4/weather/realtime?location=${location.latitude},${location.longitude}&units=metric&apikey=${pass}`,
+      });
+      let fetchTime = data.time;
+      const tIndex = fetchTime.indexOf("T");
+      fetchTime = fetchTime.slice(tIndex + 1, tIndex + 6);
+      data.time = fetchTime;
+
+      setWeatherData(data);
+
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getForecast = async (location, pass) => {
+    try {
+      // Get weather data using axios
+      const { data } = await axiosBase.request({
+        url: `${apiEndpoints.forecast5}?lat=${location.latitude}&lon=${location.longitude}&appid=${pass}&units=metric`,
+      });
+
+      // setWeatherData(data);
+
+      // Get weather data using the fetch API
+      // const response = await fetch(
+      //   `https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=${pass}`
+      // );
+      // const converted = await response.json()
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getLocaleDate = () => {
@@ -69,26 +152,34 @@ export default function CurrentWeatherScreen() {
     });
     return localeDate;
   };
+
+  const { colorScheme } = useColorScheme();
+
+  const updateTabViewStyle = useCallback(
+    (colorScheme) => (colorScheme == "dark" ? "#1e293b" : "#38bdf8"),
+    [colorScheme]
+  );
   useEffect(() => {
     getLocation();
     const dateString = getLocaleDate();
     setCurrentDate(dateString);
-  }, []);
-  getLocaleDate();
+    // include a boolean in the current weather function to indicate whether weather is fetched or not. Show a loading indicator until weather data is fetched
+  }, [location]);
+
+  //   useCallback(()=>{    getCurrentWeather(location, pass);
+  // }, [location])()
+  //   getLocaleDate();
   return (
-    <ImageBackground
-      source={require(`${BACK_IMG}`)}
-      className="flex-grow px-4  pt-14"
-    >
-      <View className="flex-grow">
+    <View className=" bg-sky-300 flex-grow px-4  pt-14 dark:bg-black">
+      <View className="flex-grow ">
         <ScrollView
           ref={scrollRef}
           showsVerticalScrollIndicator={false}
           // style={{ flex: 1 }}
         >
           <View
-            className="my-6 p-5 flex rounded-xl justify-center "
-            style={{ backgroundColor: viewBackground }}
+            className="bg-sky-400 dark:bg-slate-800 my-2  p-5 flex rounded-xl justify-center"
+            // style={{ backgroundColor: viewBackground }}
           >
             <View className=" justify-center flex-row">
               <SimpleLineIcons
@@ -97,71 +188,96 @@ export default function CurrentWeatherScreen() {
                 color={"white"}
                 style={{ paddingRight: 6 }}
               />
-              <AppText className={"text-white"}>Ayeduase</AppText>
+              <AppText>{city}</AppText>
             </View>
-            <AppText className={"text-white text-center pt-4"}>
-              {currentDate}
-            </AppText>
+            <AppText className={" text-center pt-4"}>{currentDate}</AppText>
           </View>
-          <View className="justify-center">
-            <View className="flex-row  justify-center">
-              <TempText className="text-center">13</TempText>
-              <AppText
-                className="pl-1 text-base"
-                style={{ alignSelf: "center" }}
-              >
-                Feels Like {feelTemp}°
+          <View className="bg-sky-400 justify-center dark:bg-slate-800 rounded-xl p-5">
+            <View>
+              <View className="flex-row  justify-center">
+                <TempText className="text-center">{temp}</TempText>
+                <AppText
+                  className="pl-1 text-base"
+                  style={{ alignSelf: "center" }}
+                >
+                  Feels Like {feelTemp}°
+                </AppText>
+              </View>
+              <AppText className={"text-center text-sm"}>
+                as at {weatherData.time}
               </AppText>
             </View>
-            <View className="flex-row justify-center center-3">
-              <Ionicons
-                name="rainy-sharp"
-                size={45}
-                style={{
-                  color: "rgba(200,255,255,0.4)",
-                  borderColor: "rgba(0,123,255,0.9)",
-                }}
-              />
-              <AppText className={"text-xl"} style={{ alignSelf: "center" }}>
-                Rains
+            <View className=" items-center">
+              {/* {weatherData && (
+                <CachedImage
+                  imageUri={genIconUrl(weatherData?.weather[0].icon)}
+                />
+              )} */}
+              <AppText
+                className={"text-2xl font-semibold "}
+                style={{ alignSelf: "center" }}
+              >
+                {getWeatherDescription(weatherData?.values.weatherCode)}
               </AppText>
             </View>
           </View>
           <View
-            className=" rounded-xl p-4 my-6"
-            style={{ backgroundColor: viewBackground }}
+            className="bg-sky-400 rounded-xl p-4 my-2 dark:bg-slate-800 flex justify-center "
+            // style={{ backgroundColor: viewBackground }}
           >
-            <View className="flex-row justify-between">
-              <View className="flex-row w-1/2">
-                <Entypo name="drop" size={45} color={iconColor} />
+            <View className="flex-row justify-evenly">
+              <View>
+                <View className="flex-row ">
+                  <AppText className="text-base">Humidity</AppText>
+                  <Entypo name="drop" size={25} color={"white"} />
+                </View>
+
                 <AppText className="p-2" style={{ alignSelf: "center" }}>
                   {humidity}
                 </AppText>
               </View>
 
-              <View className="flex-row w-1/2">
-                <Fontisto
-                  name="wind"
-                  size={45}
-                  color={iconColor}
-                  className="p-2"
-                />
+              <View>
+                <View className="flex-row">
+                  <AppText className="text-base pr-2">UV Index</AppText>
+                  <Ionicons name="ios-sunny" size={25} color={"white"} />
+                </View>
+
+                <AppText className="p-2" style={{ alignSelf: "center" }}>
+                  {UVI}
+                </AppText>
+              </View>
+
+              <View>
+                <View className="flex-row ">
+                  <AppText className="text-base pr-2">Windspeed</AppText>
+                  <Fontisto name="wind" size={25} color={"white"} />
+                </View>
+
                 <AppText className="p-2" style={{ alignSelf: "center" }}>
                   {windSpeed}
                 </AppText>
               </View>
             </View>
-            <View className="flex-row mt-5 ">
-              <View className="flex-row w-1/2">
-                <Feather name="cloud-drizzle" size={45} color={iconColor} />
+            <View className="flex-row justify-evenly pt-5">
+              <View>
+                <View className="flex-row">
+                  <AppText className="text-base pr-2">Visibility</AppText>
+                  <Entypo name="eye" size={25} color={"white"} />
+                </View>
+
                 <AppText className="p-2" style={{ alignSelf: "center" }}>
-                  {precipitation}
+                  {visibility} km
                 </AppText>
               </View>
-              <View className="flex-row w-1/2">
-                <Ionicons name="sunny-sharp" size={45} />
+              <View>
+                <View className="flex-row">
+                  <AppText className="text-base pr-2">Rain Prob.</AppText>
+                  <Ionicons name="ios-rainy-sharp" size={25} color={"white"} />
+                </View>
+
                 <AppText className="p-2" style={{ alignSelf: "center" }}>
-                  {UVI}
+                  {pptProb}
                 </AppText>
               </View>
             </View>
@@ -186,10 +302,12 @@ export default function CurrentWeatherScreen() {
             onChange={(e) => {
               setTabIndex(e);
             }}
-            containerStyle={{backgroundColor: "rgba(0, 0, 0, 0.2)"}}
-            titleStyle={{ color: "white",  }}
+            containerStyle={{
+              backgroundColor: updateTabViewStyle(colorScheme),
+            }}
+            titleStyle={{ color: "white" }}
             indicatorStyle={{
-              backgroundColor: "#404040",
+              backgroundColor: colorScheme == "dark" ? "#fff" : "#0369a1",
             }}
             scrollable={true}
           >
@@ -219,7 +337,7 @@ export default function CurrentWeatherScreen() {
             containerStyle={{
               paddingBottom: "80%",
               maxHeight: "60%",
-              backgroundColor: "rgba(0, 0, 0, 0.2)",
+              backgroundColor: colorScheme == "dark" ? "#1e293b" : "#38bdf8",
             }}
             animationType="spring"
           >
@@ -244,9 +362,11 @@ export default function CurrentWeatherScreen() {
           </View> */}
 
           {/* THE SCROLLVIEW CUTS SOME OF THE CONTENT OFF AFTER SETTING TABVIEW HEIGHTS IN PERCENTAGES. USING NORMAL PIXELS STOPS THE PROBLEM. Use paddingBottom in percentage if the percentage is required */}
-      <Button onPress={getCurrentWeather}>Get Weather</Button>
+          <Button onPress={() => getRealtimeWeather(location, pass)}>
+            Get Forecast
+          </Button>
         </ScrollView>
       </View>
-    </ImageBackground>
+    </View>
   );
 }

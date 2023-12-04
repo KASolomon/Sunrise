@@ -3,7 +3,7 @@ import React from "react";
 
 export default function AppText({children, style=[{}]}) {
   return (
-    <Text style={[styles.text, ...style]} className="dark:text-white">
+    <Text style={[styles.text, ...style]} className="text-white">
       {children}
     </Text>
   );
