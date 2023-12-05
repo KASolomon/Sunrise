@@ -1,0 +1,5 @@
+Get the city name from location coordinates and display 
+Fetch weather information on screen mount
+Implement pull to refresh
+Build hourly forecast component 
+Build daily forecast screen
