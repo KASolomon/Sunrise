@@ -1,34 +1,28 @@
 import {
-  View,
-  Text,
-  ImageBackground,
-  TouchableWithoutFeedback,
-  ScrollView,
-} from "react-native";
-import React, { useCallback, useRef, useState } from "react";
-import axiosBase, { realtime } from "../config/axiosBase";
-import apiEndpoints, { genIconUrl } from "../config/apiEndpoints";
-import { useEffect } from "react";
-import useLocation from "../hooks/useLocation";
-import pass from "../config/pass";
-import { Button, Tab, TabView } from "@rneui/base";
-import AppText from "../components/AppText";
-import TempText from "../components/TempText";
-import {
-  Ionicons,
-  SimpleLineIcons,
   Entypo,
   Fontisto,
-  Feather,
+  Ionicons,
+  SimpleLineIcons
 } from "@expo/vector-icons";
-import CachedImage from "../components/CachedImage";
+import { Button } from "@rneui/base";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ScrollView,
+  View
+} from "react-native";
+import AppText from "../components/AppText";
+import TempText from "../components/TempText";
+import apiEndpoints from "../config/apiEndpoints";
+import axiosBase from "../config/axiosBase";
+import pass from "../config/pass";
+import useLocation from "../hooks/useLocation";
 
-import Icon from "@svgr-iconkit/weather-icons";
-import { useColorScheme } from "nativewind";
 import axios from "axios";
-import { weatherCode } from "../config/weatherCodes";
+import { useColorScheme } from "nativewind";
+import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
 import { getUVIDescription } from "../config/utils";
-export default function CurrentWeatherScreen() {
+import { weatherCode } from "../config/weatherCodes";
+export default function RealtimeWeatherScreen() {
   const [weatherData, setWeatherData] = useState({
     time: "2023-12-04T14:31:00Z",
     values: {
@@ -71,6 +65,7 @@ export default function CurrentWeatherScreen() {
   const visibility = Math.floor(weatherData.values.visibility);
   const pptProb =
     Math.floor(weatherData.values.precipitationProbability).toString() + "%";
+  const realtimeWeatherCode = weatherData?.values.weatherCode;
   // const sunrise = new Date(weatherData?.sys.sunrise).toLocaleTimeString([], {
   //   hour: "2-digit",
   //   minute: "2-digit",
@@ -202,23 +197,22 @@ export default function CurrentWeatherScreen() {
                   Feels Like {feelTemp}°
                 </AppText>
               </View>
-              <AppText className={"text-center text-sm"}>
-                as at {weatherData.time}
-              </AppText>
             </View>
             <View className=" items-center">
-              {/* {weatherData && (
-                <CachedImage
-                  imageUri={genIconUrl(weatherData?.weather[0].icon)}
-                />
-              )} */}
+              <TomorrowWeatherIcon
+                code={realtimeWeatherCode}
+                className="w-14 h-14"
+              />
               <AppText
-                className={"text-2xl font-semibold "}
+                className={"text-2xl font-semibold py-2 "}
                 style={{ alignSelf: "center" }}
               >
-                {getWeatherDescription(weatherData?.values.weatherCode)}
+                {getWeatherDescription(realtimeWeatherCode)}
               </AppText>
             </View>
+            <AppText className={"text-center text-sm"}>
+              as at {weatherData.time}
+            </AppText>
           </View>
           <View
             className="bg-sky-400 rounded-xl p-4 my-2 dark:bg-slate-800 flex justify-center "
@@ -281,7 +275,7 @@ export default function CurrentWeatherScreen() {
               </View>
             </View>
           </View>
-          <Button
+          {/* <Button
             type="clear"
             size="sm"
             className="mb-6"
@@ -294,9 +288,9 @@ export default function CurrentWeatherScreen() {
               )
             }
             onPress={handleForecastScroll}
-          />
+          /> */}
           {/* forecast views */}
-          <Tab
+          {/* <Tab
             value={tabIndex}
             onChange={(e) => {
               setTabIndex(e);
@@ -356,7 +350,7 @@ export default function CurrentWeatherScreen() {
             <TabView.Item>
               <AppText>Weekly Forecast</AppText>
             </TabView.Item>
-          </TabView>
+          </TabView> */}
           {/* <View className="bg-orange-400 min-h-fit flex">
           </View> */}
 

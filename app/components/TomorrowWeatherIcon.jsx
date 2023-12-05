@@ -3,7 +3,7 @@ import React from "react";
 import { View, useColorScheme } from "react-native";
 import { weatherCode } from "../config/weatherCodes";
 
-export default function TomorrowWeatherIcon({ code }) {
+export default function TomorrowWeatherIcon({ code, style = {} }) {
   const getIconSource = (code) => {
     const colorScheme = useColorScheme();
     switch (code) {
@@ -23,7 +23,7 @@ export default function TomorrowWeatherIcon({ code }) {
   return (
       <Image
         source={getIconSource(code)}
-        style={{ width: 30, height: 30 }}
+        style={[ style]}
         alt="Weather Icon"
         transition={{ duration: 1000, timing: "ease-in-out" }}
       />

@@ -1,26 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, View } from 'react-native';
-import RainAnimation from './app/components/RainAnimation';
 import useLocation from './app/hooks/useLocation';
-import CurrentWeatherScreen from './app/screens/CurrentWeatherScreen';
-import CachedImage from './app/components/CachedImage';
-import { genIconUrl } from './app/config/apiEndpoints';
-import TomorrowWeatherIcon from './app/components/TomorrowWeatherIcon';
+import RealtimeWeatherScreen from './app/screens/RealtimeWeatherScreen';
 
 export default function App () {
  
-  const getLocation = async ()=>{
-
-    const location = await useLocation();
-    console.log(location)
-  }
-  // getLocation();
-  
-//Use the location to get the current weather using OpenWeatherMap's API
 
   return (
     <View className=" flex-grow ">
-      <CurrentWeatherScreen/>
+      <RealtimeWeatherScreen/>
       <StatusBar style="auto" />
     </View>
   );
