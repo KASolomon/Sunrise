@@ -24,7 +24,8 @@
     "react-native-animated-weather-icons-fork": "^2.1.0",
     "react-native-safe-area-context": "^4.6.3",
     "react-native-svg": "13.9.0",
-    "tailwindcss": "^3.3.2"
+    "tailwindcss": "^3.3.2",
+    "vm": "^0.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

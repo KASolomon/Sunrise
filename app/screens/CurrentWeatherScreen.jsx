@@ -60,7 +60,6 @@ export default function CurrentWeatherScreen() {
   const [tabIndex, setTabIndex] = useState();
   const [up, setUp] = useState(false);
   const scrollRef = useRef(null);
-  const [description, setDescription] = useState();
   // Weather constants
   const city = weatherData?.name;
   const UVI = getUVIDescription(weatherData.values.uvIndex);
@@ -83,7 +82,7 @@ export default function CurrentWeatherScreen() {
   // });
 
   const getWeatherDescription = (code = 0) => {
-    const weatherDesc = weatherCode[code];
+    const weatherDesc = weatherCode[code].description;
     return weatherDesc;
   };
   const iconColor = "rgba(0,0,0,0.7)";

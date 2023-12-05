@@ -5,6 +5,7 @@ import useLocation from './app/hooks/useLocation';
 import CurrentWeatherScreen from './app/screens/CurrentWeatherScreen';
 import CachedImage from './app/components/CachedImage';
 import { genIconUrl } from './app/config/apiEndpoints';
+import TomorrowWeatherIcon from './app/components/TomorrowWeatherIcon';
 
 export default function App () {
  
@@ -18,8 +19,7 @@ export default function App () {
 //Use the location to get the current weather using OpenWeatherMap's API
 
   return (
-    <View className=" flex-grow">
-      {/* <CachedImage imageUri={genIconUrl("03d")} /> */}
+    <View className=" flex-grow ">
       <CurrentWeatherScreen/>
       <StatusBar style="auto" />
     </View>

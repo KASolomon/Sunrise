@@ -1,31 +1,120 @@
-export const  weatherCode =  {
-      "0": " ",
-      "1000": "Clear, Sunny",
-      "1100": "Mostly Clear",
-      "1101": "Partly Cloudy",
-      "1102": "Mostly Cloudy",
-      "1001": "Cloudy",
-      "2000": "Fog",
-      "2100": "Light Fog",
-      "4000": "Drizzle",
-      "4001": "Rain",
-      "4200": "Light Rain",
-      "4201": "Heavy Rain",
-      "5000": "Snow",
-      "5001": "Flurries",
-      "5100": "Light Snow",
-      "5101": "Heavy Snow",
-      "6000": "Freezing Drizzle",
-      "6001": "Freezing Rain",
-      "6200": "Light Freezing Rain",
-      "6201": "Heavy Freezing Rain",
-      "7000": "Ice Pellets",
-      "7101": "Heavy Ice Pellets",
-      "7102": "Light Ice Pellets",
-      "8000": "Thunderstorm"
-    }
+export const weatherCode = {
+  0: " ",
+  1000: {
+    description: "Clear, Sunny",
+    iconSource: require("../../assets/weather_icons/10000.png"),
+  },
+  1100: {
+    description: "Mostly Clear",
+    iconSource: require("../../assets/weather_icons/11000.png"),
+  },
+  1101: {
+    description:  "Partly Cloudy",
+    iconSource: require("../../assets/weather_icons/11010.png"),
+  },
+  1102: {
+    description: "Mostly Cloudy",
+    iconSource: require("../../assets/weather_icons/11020.png"),
+  },
+  1001: {
+    description: "Cloudy",
+    iconSource: require("../../assets/weather_icons/10010.png"),
+  },
+  2000: {
+    description: "Fog",
+    iconSource: require("../../assets/weather_icons/20000.png"),
+  },
+  2100: {
+    description: "Light Fog",
+    iconSource: require("../../assets/weather_icons/21000.png"),
+  },
+  4000: {
+    description: "Drizzle",
+    iconSource: require("../../assets/weather_icons/40000.png"),
+  },
+  4001: {
+    description: "Rain",
+    iconSource: require("../../assets/weather_icons/40010.png"),
+  },
+  4200: {
+    description: "Light Rain",
+    iconSource: require("../../assets/weather_icons/42000.png"),
+  },
+  4201: {
+    description: "Heavy Rain",
+    iconSource: require("../../assets/weather_icons/42010.png"),
+  },
+  5000: {
+    description: "Snow",
+    iconSource: require("../../assets/weather_icons/50000.png"),
+  },
+  5001: {
+    description: "Flurries",
+    iconSource: require("../../assets/weather_icons/50010.png"),
+  },
+  5100: {
+    description: "Light Snow",
+    iconSource: require("../../assets/weather_icons/51000.png"),
+  },
+  5101: {
+    description: "Heavy Snow",
+    iconSource: require("../../assets/weather_icons/51010.png"),
+  },
+  6000: {
+    description: "Freezing Drizzle",
+    iconSource: require("../../assets/weather_icons/60000.png"),
+  },
+  6001: {
+    description: "Freezing Rain",
+    iconSource: require("../../assets/weather_icons/60010.png"),
+  },
+  6200: {
+    description: "Light Freezing Rain",
+    iconSource: require("../../assets/weather_icons/62000.png"),
+  },
+  6201: {
+    description: "Heavy Freezing Rain",
+    iconSource: require("../../assets/weather_icons/62010.png"),
+  },
+  7000: {
+    description: "Ice Pellets",
+    iconSource: require("../../assets/weather_icons/70000.png"),
+  },
+  7101: {
+    description: "Heavy Ice Pellets",
+    iconSource: require("../../assets/weather_icons/71010.png"),
+  },
+  7102: {
+    description: "Light Ice Pellets",
+    iconSource: require("../../assets/weather_icons/71020.png"),
+  },
+  8000: {
+    description: "Thunderstorm",
+    iconSource: require("../../assets/weather_icons/80000.png"),
+  },
+  sunrise_light: {
+    description: "Sunrise",
+    iconSource: require("../../assets/weather_icons/sunrise-light.png"),
+  },
+  sunrise_dark: {
+    description: "Sunrise",
+    iconSource: require("../../assets/weather_icons/sunrise-dark.png"),
+  },
+  sunset_dark: {
+    description: "Sunset",
+    iconSource: require("../../assets/weather_icons/sunset-dark.png"),
+  },
+  sunset_light: {
+    description: "Sunset",
+    iconSource: require("../../assets/weather_icons/sunset-light.png"),
+  },
+  sunset: {
+    description: "Sunset",
+    iconSource: require("../../assets/weather_icons/80000.png"),
+  },
+};
 
-    export const weatherCodeFullDay= {
+export const weatherCodeFullDay= {
       "0": "Unknown",
       "1000": "Clear, Sunny",
       "1100": "Mostly Clear",
@@ -315,3 +404,4 @@ export const  weatherCode =  {
       "80021": "Mostly Cloudy and Thunderstorm",
       "80001": "Thunderstorm"
     }
+
