@@ -8,7 +8,7 @@ export default useLocation = async () => {
     Alert.alert(
       "Location Access Denied",
       `You can grant access anytime in your settings app. ${APP_NAME} needs your location to work properly.`,
-      [{text: 'Okay'}]
+      [{ text: "Okay" }]
     );
   };
   if (!granted) {
@@ -19,5 +19,10 @@ export default useLocation = async () => {
     coords: { latitude, longitude },
     timestamp,
   } = await Location.getCurrentPositionAsync();
-  return { latitude, longitude, timestamp };
+
+  const geocode = await Location.reverseGeocodeAsync({latitude, longitude})
+
+  console.log(geocode)
+
+  // return { latitude, longitude, timestamp };
 };

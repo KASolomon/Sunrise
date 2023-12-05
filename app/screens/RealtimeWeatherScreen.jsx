@@ -14,7 +14,7 @@ import AppText from "../components/AppText";
 import TempText from "../components/TempText";
 import apiEndpoints from "../config/apiEndpoints";
 import axiosBase from "../config/axiosBase";
-import pass from "../config/pass";
+import pass, { geocodingPass } from "../config/pass";
 import useLocation from "../hooks/useLocation";
 
 import axios from "axios";
@@ -97,6 +97,22 @@ export default function RealtimeWeatherScreen() {
     setLocation(currentLocation);
   };
 
+  const getCity = async (location, geocodingPass) => {
+    try {
+      
+      const { data:{results} } = await axios.request({
+        url: `https://api.opencagedata.com/geocode/v1/json?q=${location.latitude}+${location.longitude}&key=${geocodingPass}`,
+      });
+      console.log('Annotaions' , results[0].annotations);
+      console.log('Bounds' ,results[0].bounds);
+      console.log('Geometry', results[0].geometry);
+      console.log('Components', results[0].components);
+    } catch (error) {
+      console.log(error)
+    }
+  };
+
+
   const getRealtimeWeather = async (location, pass) => {
     try {
       const {
@@ -111,7 +127,6 @@ export default function RealtimeWeatherScreen() {
 
       setWeatherData(data);
 
-      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -130,7 +145,6 @@ export default function RealtimeWeatherScreen() {
       //   `https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=${pass}`
       // );
       // const converted = await response.json()
-      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -160,9 +174,7 @@ export default function RealtimeWeatherScreen() {
     // include a boolean in the current weather function to indicate whether weather is fetched or not. Show a loading indicator until weather data is fetched
   }, [location]);
 
-  //   useCallback(()=>{    getCurrentWeather(location, pass);
-  // }, [location])()
-  //   getLocaleDate();
+// getCity(location, geocodingPass)
   return (
     <View className=" bg-sky-300 flex-grow px-4  pt-14 dark:bg-black">
       <View className="flex-grow ">
