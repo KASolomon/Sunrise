@@ -2,20 +2,16 @@ import {
   Entypo,
   Fontisto,
   Ionicons,
-  SimpleLineIcons
+  SimpleLineIcons,
 } from "@expo/vector-icons";
 import { Button } from "@rneui/base";
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import {
-  ScrollView,
-  View
-} from "react-native";
+import * as Location from "expo-location";
+import React, { useEffect, useRef, useState } from "react";
+import { View, Animated, ScrollView, RefreshControl } from "react-native";
 import AppText from "../components/AppText";
 import TempText from "../components/TempText";
 import apiEndpoints from "../config/apiEndpoints";
 import axiosBase from "../config/axiosBase";
-import pass, { geocodingPass } from "../config/pass";
-import useLocation from "../hooks/useLocation";
 
 import axios from "axios";
 import { useColorScheme } from "nativewind";
@@ -52,7 +48,7 @@ export default function RealtimeWeatherScreen() {
   const [location, setLocation] = useState();
   const [city, setCity] = useState();
   const [currentDate, setCurrentDate] = useState();
-  const [tabIndex, setTabIndex] = useState();
+  const [refreshing, setRefreshing] = useState(false);
   const [up, setUp] = useState(false);
   const scrollRef = useRef(null);
   // Weather constants
@@ -93,27 +89,47 @@ export default function RealtimeWeatherScreen() {
   };
 
   const getLocation = async (setLocation) => {
-    const currentLocation = await useLocation();
-    setLocation(currentLocation);
+    const { granted } = await Location.requestForegroundPermissionsAsync();
+    const APP_NAME = "Sunrise";
+    const errorAlert = () => {
+      Alert.alert(
+        "Location Access Denied",
+        `You can grant access anytime in your settings app. ${APP_NAME} needs your location to work properly.`,
+        [{ text: "Okay" }]
+      );
+    };
+    if (!granted) {
+      return errorAlert();
+    }
+    try {
+      const {
+        coords: { latitude, longitude },
+        timestamp,
+      } = await Location.getCurrentPositionAsync();
+
+      return { latitude, longitude, timestamp };
+
+      // setLocation({ latitude, longitude, timestamp });
+      // const geocode = await Location.reverseGeocodeAsync({latitude, longitude})
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getCity = async (location, geocodingPass, setCity) => {
     try {
-      
-      const { data:{results} } = await axios.request({
+      const {
+        data: { results },
+      } = await axios.request({
         url: `https://api.opencagedata.com/geocode/v1/json?q=${location.latitude}+${location.longitude}&key=${geocodingPass}`,
       });
       setCity(results[0].components.suburb);
-      console.log('Annotaions' , results[0].annotations);
-      console.log('Bounds' ,results[0].bounds);
-      console.log('Geometry', results[0].geometry);
-      console.log('Components', results[0].components);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
-  const getRealtimeWeather = async (location, pass) => {
+  const getRealtimeWeather = async (location, pass, setWeatherData) => {
     try {
       const {
         data: { data },
@@ -124,9 +140,8 @@ export default function RealtimeWeatherScreen() {
       const tIndex = fetchTime.indexOf("T");
       fetchTime = fetchTime.slice(tIndex + 1, tIndex + 6);
       data.time = fetchTime;
-
+      console.log(data);
       setWeatherData(data);
-
     } catch (error) {
       console.log(error);
     }
@@ -163,29 +178,52 @@ export default function RealtimeWeatherScreen() {
 
   const { colorScheme } = useColorScheme();
 
-
-
-  useEffect(() => {
-    getLocation(setLocation);
-    // console.log(location)
-    getCity(location, geocodingPass, setCity)
+  const startFxns = async () => {
+    // const location = await getLocation(setLocation);
+    // await getRealtimeWeather(location, pass, setWeatherData);
+    // await getCity(location, geocodingPass, setCity);
     const dateString = getLocaleDate();
     setCurrentDate(dateString);
     // include a boolean in the current weather function to indicate whether weather is fetched or not. Show a loading indicator until weather data is fetched
+  };
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    startFxns();
+    console.log("refreshing");
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 3000);
+  };
+  const opacity = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    startFxns();
+    Animated.timing(opacity, {
+      toValue: 1,
+      useNativeDriver: true,
+      duration: 500,
+    }).start();
   }, []);
 
   return (
-    <View className=" bg-sky-300 flex-grow px-4  pt-14 dark:bg-black">
-      <View className="flex-grow ">
-        <ScrollView
-          ref={scrollRef}
-          showsVerticalScrollIndicator={false}
-          // style={{ flex: 1 }}
-        >
-          <View
-            className="bg-sky-400 dark:bg-slate-800 my-2  p-5 flex rounded-xl justify-center"
-            // style={{ backgroundColor: viewBackground }}
-          >
+    <ScrollView
+      contentContainerStyle={{ flex: 1 }}
+      refreshControl={
+        <RefreshControl
+          onRefresh={handleRefresh}
+          refreshing={refreshing}
+          progressBackgroundColor={"#38bdf8"}
+          progressViewOffset={50}
+        />
+      }
+    >
+      <Animated.View
+        style={{ opacity: opacity }}
+        className=" bg-sky-300 flex-grow px-4  dark:bg-black "
+      >
+        <View className="flex-grow justify-center">
+          <View className="bg-sky-400 dark:bg-slate-800 my-2  p-5 flex rounded-xl justify-center">
             <View className=" justify-center flex-row">
               <SimpleLineIcons
                 name="location-pin"
@@ -196,6 +234,11 @@ export default function RealtimeWeatherScreen() {
               <AppText>{city}</AppText>
             </View>
             <AppText className={" text-center pt-4"}>{currentDate}</AppText>
+          </View>
+          <View className="my-4 bg-sky-400 dark:bg-slate-800 rounded-lg">
+            <AppText className="text-center py-4 font-bold text-2xl">
+              Realtime Weather
+            </AppText>
           </View>
           <View className="bg-sky-400 justify-center dark:bg-slate-800 rounded-xl p-5">
             <View>
@@ -286,20 +329,13 @@ export default function RealtimeWeatherScreen() {
               </View>
             </View>
           </View>
-          {/* <Button
-            type="clear"
-            size="sm"
-            className="mb-6"
-            TouchableComponent={TouchableWithoutFeedback}
-            icon={
-              up ? (
-                <Entypo name="chevron-down" size={25} color={"white"} />
-              ) : (
-                <Entypo name="chevron-up" size={25} color={"white"} />
-              )
-            }
-            onPress={handleForecastScroll}
-          /> */}
+          <Button
+            size="lg"
+            buttonStyle={{ borderRadius: 25, marginVertical: 15 }}
+            containerStyle={{ borderRadius: 70 }}
+          >
+            Weather Forecasts
+          </Button>
           {/* forecast views */}
           {/* <Tab
             value={tabIndex}
@@ -366,11 +402,8 @@ export default function RealtimeWeatherScreen() {
           </View> */}
 
           {/* THE SCROLLVIEW CUTS SOME OF THE CONTENT OFF AFTER SETTING TABVIEW HEIGHTS IN PERCENTAGES. USING NORMAL PIXELS STOPS THE PROBLEM. Use paddingBottom in percentage if the percentage is required */}
-          <Button onPress={() => getRealtimeWeather(location, pass)}>
-            Get Forecast
-          </Button>
-        </ScrollView>
-      </View>
-    </View>
+        </View>
+      </Animated.View>
+    </ScrollView>
   );
 }

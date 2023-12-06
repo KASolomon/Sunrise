@@ -7,7 +7,7 @@ export default function App () {
  
 
   return (
-    <View className=" flex-grow ">
+    <View className=" flex-grow dark:bg-black">
       <RealtimeWeatherScreen/>
       <StatusBar style="auto" />
     </View>
