@@ -50,12 +50,12 @@ export default function RealtimeWeatherScreen() {
   });
 
   const [location, setLocation] = useState();
+  const [city, setCity] = useState();
   const [currentDate, setCurrentDate] = useState();
   const [tabIndex, setTabIndex] = useState();
   const [up, setUp] = useState(false);
   const scrollRef = useRef(null);
   // Weather constants
-  const city = weatherData?.name;
   const UVI = getUVIDescription(weatherData.values.uvIndex);
   const windSpeed = weatherData?.values.windSpeed.toString() + "m/s";
   const dark = true;
@@ -92,17 +92,18 @@ export default function RealtimeWeatherScreen() {
     setUp(!up);
   };
 
-  const getLocation = async () => {
+  const getLocation = async (setLocation) => {
     const currentLocation = await useLocation();
     setLocation(currentLocation);
   };
 
-  const getCity = async (location, geocodingPass) => {
+  const getCity = async (location, geocodingPass, setCity) => {
     try {
       
       const { data:{results} } = await axios.request({
         url: `https://api.opencagedata.com/geocode/v1/json?q=${location.latitude}+${location.longitude}&key=${geocodingPass}`,
       });
+      setCity(results[0].components.suburb);
       console.log('Annotaions' , results[0].annotations);
       console.log('Bounds' ,results[0].bounds);
       console.log('Geometry', results[0].geometry);
@@ -111,7 +112,6 @@ export default function RealtimeWeatherScreen() {
       console.log(error)
     }
   };
-
 
   const getRealtimeWeather = async (location, pass) => {
     try {
@@ -163,18 +163,17 @@ export default function RealtimeWeatherScreen() {
 
   const { colorScheme } = useColorScheme();
 
-  const updateTabViewStyle = useCallback(
-    (colorScheme) => (colorScheme == "dark" ? "#1e293b" : "#38bdf8"),
-    [colorScheme]
-  );
+
+
   useEffect(() => {
-    getLocation();
+    getLocation(setLocation);
+    // console.log(location)
+    getCity(location, geocodingPass, setCity)
     const dateString = getLocaleDate();
     setCurrentDate(dateString);
     // include a boolean in the current weather function to indicate whether weather is fetched or not. Show a loading indicator until weather data is fetched
-  }, [location]);
+  }, []);
 
-// getCity(location, geocodingPass)
   return (
     <View className=" bg-sky-300 flex-grow px-4  pt-14 dark:bg-black">
       <View className="flex-grow ">

@@ -20,9 +20,9 @@ export default useLocation = async () => {
     timestamp,
   } = await Location.getCurrentPositionAsync();
 
-  const geocode = await Location.reverseGeocodeAsync({latitude, longitude})
+  // const geocode = await Location.reverseGeocodeAsync({latitude, longitude})
 
-  console.log(geocode)
+  // console.log(geocode)
 
-  // return { latitude, longitude, timestamp };
+  return { latitude, longitude, timestamp };
 };
