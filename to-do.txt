@@ -5,11 +5,11 @@ Implement pull to refresh - DONE
 
 Build hourly forecast component 
 
-    - Fetch hourly forecast from api on screen mount (the RealtimeWeatherScreen)
+    - Fetch hourly forecast from api on screen mount (the RealtimeWeatherScreen) -DONE
         - data fetching successful ? continue : load data from cache, display and return
     - Group hourly forecasts by day 
         - Tip : for current day, add the forecasts to the combined array as the values are extracted and displayed. Then group the others later. The hourly forecasts for the other days will be used for their respective days if fetching data fails on those days
-    - Display horly forecast for all hours left in the current day
+    - Display horly forecast for all hours left in the current day - DONE
     - Store the forecast data in redux store
     - Cache the data with MMKV
     -
