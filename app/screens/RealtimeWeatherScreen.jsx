@@ -16,8 +16,10 @@ import axiosBase from "../config/axiosBase";
 import axios from "axios";
 import { useColorScheme } from "nativewind";
 import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
-import { getUVIDescription } from "../config/utils";
+import { getCommonTime, getUVIDescription } from "../config/utils";
 import { weatherCode } from "../config/weatherCodes";
+import pass,{geocodingPass} from "../config/pass";
+import HourlyForecast from "../components/HourlyForecast";
 export default function RealtimeWeatherScreen() {
   const [weatherData, setWeatherData] = useState({
     time: "13:33",
@@ -45,6 +47,8 @@ export default function RealtimeWeatherScreen() {
     },
   });
 
+  const [hourlyForecast, setHourlyForecast] = useState([]);
+  const [dailyForecast, setDailyForecast] = useState([]);
   const [location, setLocation] = useState();
   const [city, setCity] = useState();
   const [currentDate, setCurrentDate] = useState();
@@ -136,30 +140,45 @@ export default function RealtimeWeatherScreen() {
       } = await axios.request({
         url: `https://api.tomorrow.io/v4/weather/realtime?location=${location.latitude},${location.longitude}&units=metric&apikey=${pass}`,
       });
-      let fetchTime = data.time;
-      const tIndex = fetchTime.indexOf("T");
-      fetchTime = fetchTime.slice(tIndex + 1, tIndex + 6);
-      data.time = fetchTime;
+      data.time = getCommonTime(data.time, true);
       console.log(data);
       setWeatherData(data);
     } catch (error) {
       console.log(error);
     }
   };
-  const getForecast = async (location, pass) => {
+  const getHourlyForecast = async (
+    location,
+    pass,
+    setHourlyForecast,
+    setDailyForecast,
+  ) => {
     try {
-      // Get weather data using axios
-      const { data } = await axiosBase.request({
-        url: `${apiEndpoints.forecast5}?lat=${location.latitude}&lon=${location.longitude}&appid=${pass}&units=metric`,
+      const { data } = await axios.request({
+        url: `https://api.tomorrow.io/v4/weather/forecast?location=${location.latitude},${location.longitude}&units=metric&apikey=${pass}`,
       });
 
-      // setWeatherData(data);
+      //Extract hourly forecasts for current day
+      const fullHForecast = data.timelines.hourly;
+      const today = new Date().toISOString();
+      const date = today.split("T")[0];
+      let currentHourly = [];
 
-      // Get weather data using the fetch API
-      // const response = await fetch(
-      //   `https://api.openweathermap.org/data/2.5/weather?lat=${location.latitude}&lon=${location.longitude}&appid=${pass}`
-      // );
-      // const converted = await response.json()
+      for (let forecast of fullHForecast) {
+        if (forecast.time.split("T")[0] == date) {
+          currentHourly.push(forecast);
+        } else {
+          break;
+        }
+      }
+      //send to redux store later
+      console.log('Current Hourly : ' , currentHourly)
+      setHourlyForecast(currentHourly);
+
+      //Cache with MMKV
+
+      //send the daily forecasts to redux later
+      setDailyForecast(data.timelines.daily);
     } catch (error) {
       console.log(error);
     }
@@ -182,6 +201,8 @@ export default function RealtimeWeatherScreen() {
     // const location = await getLocation(setLocation);
     // await getRealtimeWeather(location, pass, setWeatherData);
     // await getCity(location, geocodingPass, setCity);
+    // await getHourlyForecast(location, pass, setHourlyForecast, setDailyForecast)
+
     const dateString = getLocaleDate();
     setCurrentDate(dateString);
     // include a boolean in the current weather function to indicate whether weather is fetched or not. Show a loading indicator until weather data is fetched
@@ -220,7 +241,7 @@ export default function RealtimeWeatherScreen() {
     >
       <Animated.View
         style={{ opacity: opacity }}
-        className=" bg-sky-300 flex-grow px-4  dark:bg-black "
+        className=" bg-sky-300 flex-grow px-4 pt-16 dark:bg-black "
       >
         <View className="flex-grow justify-center">
           <View className="bg-sky-400 dark:bg-slate-800 my-2  p-5 flex rounded-xl justify-center">
@@ -235,9 +256,9 @@ export default function RealtimeWeatherScreen() {
             </View>
             <AppText className={" text-center pt-4"}>{currentDate}</AppText>
           </View>
-          <View className="my-4 bg-sky-400 dark:bg-slate-800 rounded-lg">
-            <AppText className="text-center py-4 font-bold text-2xl">
-              Realtime Weather
+          <View className="my-4 bg-sky-400 dark:bg-slate-800 rounded-xl">
+            <AppText className="text-center py-4 font-bold text-xl">
+              Current Weather
             </AppText>
           </View>
           <View className="bg-sky-400 justify-center dark:bg-slate-800 rounded-xl p-5">
@@ -329,6 +350,19 @@ export default function RealtimeWeatherScreen() {
               </View>
             </View>
           </View>
+          {hourlyForecast.length > 0 && (
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+              {hourlyForecast.map(({ time, values }, index) => { console.log('hourly component', values) 
+              return  (
+                <HourlyForecast
+                  dateTime={time}
+                  temperature={values.temperature}
+                  weatherCode={values.weatherCode}
+                  key={index}
+                />
+              )})}
+            </ScrollView>
+          )}
           <Button
             size="lg"
             buttonStyle={{ borderRadius: 25, marginVertical: 15 }}

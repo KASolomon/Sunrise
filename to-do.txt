@@ -2,5 +2,25 @@ Get the city name from location coordinates and display  - DONE
 Fetch weather information on screen mount - DONE
 Display the screen with an ease-in-out animation - DONE
 Implement pull to refresh - DONE
+
 Build hourly forecast component 
+
+    - Fetch hourly forecast from api on screen mount (the RealtimeWeatherScreen)
+        - data fetching successful ? continue : load data from cache, display and return
+    - Group hourly forecasts by day 
+        - Tip : for current day, add the forecasts to the combined array as the values are extracted and displayed. Then group the others later. The hourly forecasts for the other days will be used for their respective days if fetching data fails on those days
+    - Display horly forecast for all hours left in the current day
+    - Store the forecast data in redux store
+    - Cache the data with MMKV
+    -
+
+
+
 Build daily forecast screen
+
+    - Fetch data on screen mount (the DailyForecastScreen)
+    - Send the data to redux store
+    - Cache data with MMKV
+    - Display basic data for each day on the screen in a flatlist (date, general weather icon, avg temp)
+        - On refresh, fetch data again
+    - OnPress of a list option, display a modal or an actionsheet with more details
