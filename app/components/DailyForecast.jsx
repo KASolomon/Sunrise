@@ -1,112 +1,12 @@
-import { View, Text, Pressable, Modal, StyleSheet, ScrollView, useColorScheme } from "react-native";
+import { AntDesign, Entypo, FontAwesome, Fontisto, Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import TomorrowWeatherIcon from "./TomorrowWeatherIcon";
+import { Modal, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { weatherCode } from "../config/weatherCodes";
 import AppText from "./AppText";
 import TempText from "./TempText";
-import { weatherCode } from "../config/weatherCodes";
-import { AntDesign, FontAwesome, Ionicons, Fontisto, Entypo } from "@expo/vector-icons";
+import TomorrowWeatherIcon from "./TomorrowWeatherIcon";
 
-export default function DailyForecast() {
-  const forecast = {
-    time: "2023-12-07T06:00:00Z",
-    values: {
-      cloudBaseAvg: 1.85,
-      cloudBaseMax: 10.21,
-      cloudBaseMin: 0,
-      cloudCeilingAvg: 3.08,
-      cloudCeilingMax: 12,
-      cloudCeilingMin: 0,
-      cloudCoverAvg: 81.91,
-      cloudCoverMax: 100,
-      cloudCoverMin: 4.69,
-      dewPointAvg: 22.33,
-      dewPointMax: 22.88,
-      dewPointMin: 21.02,
-      evapotranspirationAvg: 0.152,
-      evapotranspirationMax: 0.584,
-      evapotranspirationMin: 0.008,
-      evapotranspirationSum: 3.493,
-      freezingRainIntensityAvg: 0,
-      freezingRainIntensityMax: 0,
-      freezingRainIntensityMin: 0,
-      humidityAvg: 82.33,
-      humidityMax: 99.76,
-      humidityMin: 54.95,
-      iceAccumulationAvg: 0,
-      iceAccumulationLweAvg: 0,
-      iceAccumulationLweMax: 0,
-      iceAccumulationLweMin: 0,
-      iceAccumulationLweSum: 0,
-      iceAccumulationMax: 0,
-      iceAccumulationMin: 0,
-      iceAccumulationSum: 0,
-      moonriseTime: "2023-12-07T01:22:42Z",
-      moonsetTime: "2023-12-07T13:42:22Z",
-      precipitationProbabilityAvg: 0.4,
-      precipitationProbabilityMax: 10,
-      precipitationProbabilityMin: 0,
-      pressureSurfaceLevelAvg: 981.3,
-      pressureSurfaceLevelMax: 983.06,
-      pressureSurfaceLevelMin: 978.46,
-      rainAccumulationAvg: 0,
-      rainAccumulationLweAvg: 0,
-      rainAccumulationLweMax: 0.01,
-      rainAccumulationLweMin: 0,
-      rainAccumulationMax: 0.01,
-      rainAccumulationMin: 0,
-      rainAccumulationSum: 0.01,
-      rainIntensityAvg: 0,
-      rainIntensityMax: 0.02,
-      rainIntensityMin: 0,
-      sleetAccumulationAvg: 0,
-      sleetAccumulationLweAvg: 0,
-      sleetAccumulationLweMax: 0,
-      sleetAccumulationLweMin: 0,
-      sleetAccumulationLweSum: 0,
-      sleetAccumulationMax: 0,
-      sleetAccumulationMin: 0,
-      sleetIntensityAvg: 0,
-      sleetIntensityMax: 0,
-      sleetIntensityMin: 0,
-      snowAccumulationAvg: 0,
-      snowAccumulationLweAvg: 0,
-      snowAccumulationLweMax: 0,
-      snowAccumulationLweMin: 0,
-      snowAccumulationLweSum: 0,
-      snowAccumulationMax: 0,
-      snowAccumulationMin: 0,
-      snowAccumulationSum: 0,
-      snowIntensityAvg: 0,
-      snowIntensityMax: 0,
-      snowIntensityMin: 0,
-      sunriseTime: "2023-12-07T06:04:00Z",
-      sunsetTime: "2023-12-07T17:51:00Z",
-      temperatureApparentAvg: 26.98,
-      temperatureApparentMax: 34.34,
-      temperatureApparentMin: 22.28,
-      temperatureAvg: 25.88,
-      temperatureMax: 31.16,
-      temperatureMin: 22.28,
-      uvHealthConcernAvg: 1,
-      uvHealthConcernMax: 3,
-      uvHealthConcernMin: 0,
-      uvIndexAvg: 2,
-      uvIndexMax: 8,
-      uvIndexMin: 0,
-      visibilityAvg: 9.43,
-      visibilityMax: 12.34,
-      visibilityMin: 2.19,
-      weatherCodeMax: 6201,
-      weatherCodeMin: 1001,
-      windDirectionAvg: 177.53,
-      windGustAvg: 3.92,
-      windGustMax: 6.5,
-      windGustMin: 2.02,
-      windSpeedAvg: 1.68,
-      windSpeedMax: 2.36,
-      windSpeedMin: 0.88,
-    },
-  };
+export default function DailyForecast({forecast}) {
 
   const [showModal, setShowModal] = useState(false);
   const dateFormatted = new Date(forecast.time).toLocaleDateString([], {
@@ -142,7 +42,8 @@ export default function DailyForecast() {
     weatherCode[forecast.values.weatherCodeMax].description;
   const weatherCodeMax = forecast.values.weatherCodeMax;
   const avgTemp = Math.floor(forecast.values.temperatureAvg);
-  const  colorScheme = useColorScheme()
+
+  
   return (
     <View className=" justify-center flex-grow">
       <Pressable
@@ -165,11 +66,11 @@ export default function DailyForecast() {
           </View>
         </View>
         <View className=" justify-center">
-          <TempText className="text-3xl font-bold">{avgTemp}</TempText>
+          <TempText className="text-2xl font-bold">{avgTemp}</TempText>
         </View>
       </Pressable>
       <Modal visible={showModal} animationType="slide" transparent={true}>
-        <View className="bg-sky-800 dark:bg-black flex-grow mt-24">
+        <View className="bg-sky-800 dark:bg-black flex-grow mt-36">
           <Pressable
             onPress={() => setShowModal(false)}
             className="items-center mx-5 py-4 rounded-xl"

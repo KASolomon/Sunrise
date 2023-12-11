@@ -21,6 +21,6 @@ Build daily forecast screen
     - Fetch data on screen mount (the DailyForecastScreen)
     - Send the data to redux store
     - Cache data with MMKV
-    - Display basic data for each day on the screen in a flatlist (date, general weather icon, avg temp)
-        - On refresh, fetch data again
-    - OnPress of a list option, display a modal or an actionsheet with more details
+    - Display basic data for each day on the screen in a flatlist (date, general weather icon, avg temp) - DONE
+        - On refresh, fetch data again 
+    - OnPress of a list option, display a modal or an actionsheet with more details - DONE
