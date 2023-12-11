@@ -1,6 +1,6 @@
+import { Image } from "expo-image";
 import React from "react";
 import { StyleSheet } from "react-native";
-import { Image } from "expo-image";
 export default function CachedImage({ imageUri, ...rest }) {
   return (
     <Image

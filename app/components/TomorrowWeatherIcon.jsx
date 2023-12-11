@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import React from "react";
-import { View, useColorScheme } from "react-native";
+import { useColorScheme } from "react-native";
 import { weatherCode } from "../config/weatherCodes";
 
 export default function TomorrowWeatherIcon({ code, style = {} }) {

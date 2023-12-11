@@ -7,19 +7,16 @@ import {
 import { Button } from "@rneui/base";
 import * as Location from "expo-location";
 import React, { useEffect, useRef, useState } from "react";
-import { View, Animated, ScrollView, RefreshControl } from "react-native";
+import { Animated, RefreshControl, ScrollView, View } from "react-native";
 import AppText from "../components/AppText";
 import TempText from "../components/TempText";
-import apiEndpoints from "../config/apiEndpoints";
-import axiosBase from "../config/axiosBase";
 
 import axios from "axios";
 import { useColorScheme } from "nativewind";
+import HourlyForecast from "../components/HourlyForecast";
 import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
 import { getCommonTime, getUVIDescription } from "../config/utils";
 import { weatherCode } from "../config/weatherCodes";
-import pass,{geocodingPass} from "../config/pass";
-import HourlyForecast from "../components/HourlyForecast";
 export default function RealtimeWeatherScreen() {
   const [weatherData, setWeatherData] = useState({
     time: "13:33",
@@ -172,7 +169,7 @@ export default function RealtimeWeatherScreen() {
         }
       }
       //send to redux store later
-      console.log('Current Hourly : ' , currentHourly)
+      console.log("Current daily : ", data.timelines.daily);
       setHourlyForecast(currentHourly);
 
       //Cache with MMKV
@@ -234,7 +231,6 @@ export default function RealtimeWeatherScreen() {
         <RefreshControl
           onRefresh={handleRefresh}
           refreshing={refreshing}
-          progressBackgroundColor={"#38bdf8"}
           progressViewOffset={50}
         />
       }

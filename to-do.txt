@@ -24,3 +24,12 @@ Build daily forecast screen
     - Display basic data for each day on the screen in a flatlist (date, general weather icon, avg temp) - DONE
         - On refresh, fetch data again 
     - OnPress of a list option, display a modal or an actionsheet with more details - DONE
+
+
+Render FAB on daily forecast screen only if the content exceeds viewport
+
+Implement navigation
+
+Implement Redux
+
+Implement Data caching with MMKV

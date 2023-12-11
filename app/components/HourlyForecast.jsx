@@ -1,9 +1,9 @@
-import { View, Text } from "react-native";
 import React from "react";
-import AppText from "./AppText";
-import TomorrowWeatherIcon from "./TomorrowWeatherIcon";
-import TempText from "./TempText";
+import { View } from "react-native";
 import { getCommonTime } from "../config/utils";
+import AppText from "./AppText";
+import TempText from "./TempText";
+import TomorrowWeatherIcon from "./TomorrowWeatherIcon";
 
 export default function HourlyForecast({
   dateTime,
