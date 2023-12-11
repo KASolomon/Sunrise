@@ -341,7 +341,7 @@ export default function RealtimeWeatherScreen() {
               <View>
                 <View className="flex-row">
                   <AppText className="text-base pr-2">Rain Prob.</AppText>
-                  <Ionicons name="ios-rainy-sharp" size={25} color={"white"} />
+                  <Fontisto name="rain" size={25} color={"white"} />
                 </View>
 
                 <AppText className="p-2" style={{ alignSelf: "center" }}>

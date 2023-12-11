@@ -3,14 +3,15 @@ import { StyleSheet, View } from 'react-native';
 import useLocation from './app/hooks/useLocation';
 import RealtimeWeatherScreen from './app/screens/RealtimeWeatherScreen';
 import HourlyForecast from './app/components/HourlyForecast';
+import DailyForecast from './app/components/DailyForecast';
 
 export default function App () {
  
 
   return (
-    <View className="bg-sky-400 flex-grow dark:bg-black">
-      <RealtimeWeatherScreen/>
-      {/* <HourlyForecast/> */}
+    <View className="flex-grow dark:bg-black">
+      {/* <RealtimeWeatherScreen/> */}
+      <DailyForecast/>
       <StatusBar style="auto" />
     </View>
   );

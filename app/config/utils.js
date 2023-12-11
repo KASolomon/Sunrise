@@ -31,4 +31,3 @@ export const getCommonTime = (dateTime, returnMins = false) => {
     : `${hour < 10 ? hour[1] : hour} AM`;
 };
 
-console.log(getCommonTime("2023-12-07T04:00:00Z"));

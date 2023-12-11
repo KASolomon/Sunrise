@@ -5571,7 +5571,6 @@ const weatherForecast = {
         },
       },
     ],
-    daily: [
       {
         time: "2023-12-07T06:00:00Z",
         values: {

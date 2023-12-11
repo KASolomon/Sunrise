@@ -9,7 +9,7 @@ export const weatherCode = {
     iconSource: require("../../assets/weather_icons/11000.png"),
   },
   1101: {
-    description:  "Partly Cloudy",
+    description: "Partly Cloudy",
     iconSource: require("../../assets/weather_icons/11010.png"),
   },
   1102: {
@@ -108,9 +108,13 @@ export const weatherCode = {
     description: "Sunset",
     iconSource: require("../../assets/weather_icons/sunset-light.png"),
   },
-  sunset: {
-    description: "Sunset",
-    iconSource: require("../../assets/weather_icons/80000.png"),
+  moonrise: {
+    description: "Moonrise",
+    iconSource: require("../../assets/weather_icons/11001.png"),
+  },
+  moonset: {
+    description: "Moonset",
+    iconSource: require("../../assets/weather_icons/11021.png"),
   },
 };
 
