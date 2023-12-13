@@ -15,6 +15,10 @@ export default function TomorrowWeatherIcon({ code, style = {} }) {
         return colorScheme == "dark"
           ? weatherCode["sunset_dark"].iconSource
           : weatherCode["sunset_light"].iconSource;
+      case "credit":
+        return colorScheme == "dark"
+          ? weatherCode["credit_dark"].iconSource
+          : weatherCode["credit_light"].iconSource;
       default:
         return weatherCode[code].iconSource;
     }
@@ -25,6 +29,7 @@ export default function TomorrowWeatherIcon({ code, style = {} }) {
         source={getIconSource(code)}
         style={[ style]}
         alt="Weather Icon"
+        contentFit="contain"
         transition={{ duration: 1000, timing: "ease-in-out" }}
       />
   );

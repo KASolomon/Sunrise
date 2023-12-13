@@ -17,7 +17,8 @@ import HourlyForecast from "../components/HourlyForecast";
 import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
 import { getCommonTime, getUVIDescription } from "../config/utils";
 import { weatherCode } from "../config/weatherCodes";
-export default function RealtimeWeatherScreen() {
+import routes from "../config/routes";
+export default function RealtimeWeatherScreen({navigation}) {
   const [weatherData, setWeatherData] = useState({
     time: "13:33",
     values: {
@@ -84,10 +85,9 @@ export default function RealtimeWeatherScreen() {
 
   // const viewBackground = "rgb(0, 0, 0)";
 
-  const handleForecastScroll = () => {
-    scrollRef.current?.scrollTo({ y: up ? 450 : -300, animated: true });
-    setUp(!up);
-  };
+  const handleDailyForecast = ()=>{
+    navigation.navigate(routes.dailyForecast, {dailyForecast})
+  }
 
   const getLocation = async (setLocation) => {
     const { granted } = await Location.requestForegroundPermissionsAsync();
@@ -363,6 +363,7 @@ export default function RealtimeWeatherScreen() {
             size="lg"
             buttonStyle={{ borderRadius: 25, marginVertical: 15 }}
             containerStyle={{ borderRadius: 70 }}
+            onPress={handleDailyForecast}
           >
             Weather Forecasts
           </Button>

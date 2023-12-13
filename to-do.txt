@@ -28,7 +28,9 @@ Build daily forecast screen
 
 Render FAB on daily forecast screen only if the content exceeds viewport
 
-Implement navigation
+Implement navigation - DONE
+
+Implement settings screen - DONE
 
 Implement Redux
 

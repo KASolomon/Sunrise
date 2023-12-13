@@ -9,6 +9,9 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-navigation/bottom-tabs": "^6.5.11",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/stack": "^6.3.20",
     "@rneui/base": "^4.0.0-rc.7",
     "@rneui/themed": "^4.0.0-rc.8",
     "@svgr-iconkit/weather-icons": "^0.3.1",
@@ -22,7 +25,9 @@
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-animated-weather-icons-fork": "^2.1.0",
+    "react-native-gesture-handler": "~2.12.0",
     "react-native-safe-area-context": "^4.6.3",
+    "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
     "tailwindcss": "^3.3.2",
     "vm": "^0.1.0"
