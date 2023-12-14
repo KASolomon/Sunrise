@@ -22,7 +22,6 @@ export default useLocation = async () => {
 
   // const geocode = await Location.reverseGeocodeAsync({latitude, longitude})
 
-  // console.log(geocode)
 
   return { latitude, longitude, timestamp };
 };

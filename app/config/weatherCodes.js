@@ -112,6 +112,10 @@ export const weatherCode = {
     description: "Moonrise",
     iconSource: require("../../assets/weather_icons/11001.png"),
   },
+  moonset: {
+    description: "Moonset",
+    iconSource: require("../../assets/weather_icons/11021.png"),
+  },
   credit_light: {
     iconSource: require("../../assets/weather_icons/credit_icons/Tomorrow-Black.png"),
   },

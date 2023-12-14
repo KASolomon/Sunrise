@@ -12,8 +12,11 @@ import AppBottomTabNavigator from "./app/navigators/AppBottomTabNavigator";
 export default function App() {
   return (
     <NavigationContainer>
+      <View className=" flex-grow bg-sky-400 dark:bg-slate-800">
+
       <AppBottomTabNavigator/>
         <StatusBar style="auto" />
+      </View>
     </NavigationContainer>
   );
 }

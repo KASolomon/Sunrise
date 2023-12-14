@@ -18,6 +18,8 @@ import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
 import { getCommonTime, getUVIDescription } from "../config/utils";
 import { weatherCode } from "../config/weatherCodes";
 import routes from "../config/routes";
+import pass, {geocodingPass} from '../config/pass';
+
 export default function RealtimeWeatherScreen({navigation}) {
   const [weatherData, setWeatherData] = useState({
     time: "13:33",
@@ -169,7 +171,6 @@ export default function RealtimeWeatherScreen({navigation}) {
         }
       }
       //send to redux store later
-      console.log("Current daily : ", data.timelines.daily);
       setHourlyForecast(currentHourly);
 
       //Cache with MMKV
@@ -208,7 +209,6 @@ export default function RealtimeWeatherScreen({navigation}) {
   const handleRefresh = () => {
     setRefreshing(true);
     startFxns();
-    console.log("refreshing");
     setTimeout(() => {
       setRefreshing(false);
     }, 3000);
@@ -225,8 +225,9 @@ export default function RealtimeWeatherScreen({navigation}) {
   }, []);
 
   return (
+    <View className="bg-sky-400 flex-grow dark:bg-black ">
+
     <ScrollView
-      contentContainerStyle={{ flex: 1 }}
       refreshControl={
         <RefreshControl
           onRefresh={handleRefresh}
@@ -348,15 +349,14 @@ export default function RealtimeWeatherScreen({navigation}) {
           </View>
           {hourlyForecast.length > 0 && (
             <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-              {hourlyForecast.map(({ time, values }, index) => { console.log('hourly component', values) 
-              return  (
+              {hourlyForecast.map(({ time, values }, index) =>  (
                 <HourlyForecast
                   dateTime={time}
                   temperature={values.temperature}
                   weatherCode={values.weatherCode}
                   key={index}
                 />
-              )})}
+              ))}
             </ScrollView>
           )}
           <Button
@@ -436,5 +436,6 @@ export default function RealtimeWeatherScreen({navigation}) {
         </View>
       </Animated.View>
     </ScrollView>
+    </View>
   );
 }
