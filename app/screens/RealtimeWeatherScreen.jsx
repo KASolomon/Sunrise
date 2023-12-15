@@ -38,7 +38,7 @@ export default function RealtimeWeatherScreen({ navigation }) {
   const [up, setUp] = useState(false);
   const scrollRef = useRef(null);
 
-  const weatherErrorMsg = "🤔 That's strange.\n\nPlease refresh.";
+  const weatherErrorMsg = "🤔 That's strange.\n\nPlease pull to refresh.";
 
   // Weather constants
   const UVI = getUVIDescription(weatherData?.values.uvIndex);

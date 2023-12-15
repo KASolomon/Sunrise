@@ -6,23 +6,23 @@ Implement pull to refresh - DONE
 Build hourly forecast component 
 
     - Fetch hourly forecast from api on screen mount (the RealtimeWeatherScreen) -DONE
-        - data fetching successful ? continue : load data from cache, display and return
+        - data fetching successful ? continue : load data from cache, display and return  -DONE
     - Group hourly forecasts by day 
-        - Tip : for current day, add the forecasts to the combined array as the values are extracted and displayed. Then group the others later. The hourly forecasts for the other days will be used for their respective days if fetching data fails on those days
+        - Tip : for current day, add the forecasts to the combined array as the values are extracted and displayed. Then group the others later. The hourly forecasts for the other days will be used for their respective days if fetching data fails on those days - DONE
     - Display horly forecast for all hours left in the current day - DONE
-    - Store the forecast data in redux store
-    - Cache the data with MMKV
+    - Store the forecast data in redux store 
+    - Cache the data - DONE
     -
 
 
 
 Build daily forecast screen
 
-    - Fetch data on screen mount (the DailyForecastScreen)
+    - Fetch data on screen mount (the DailyForecastScreen) - NOT NEEDED
     - Send the data to redux store
-    - Cache data with MMKV
+    - Cache data - DONE
     - Display basic data for each day on the screen in a flatlist (date, general weather icon, avg temp) - DONE
-        - On refresh, fetch data again 
+        - On refresh, fetch data again - DONE
     - OnPress of a list option, display a modal or an actionsheet with more details - DONE
 
 
@@ -34,6 +34,8 @@ Implement settings screen - DONE
 
 Implement Redux
 
-Implement Data caching with MMKV
+- Settings screen :  Implement unit switching between imperial and metric
 
-Replace that time function with the inbuilt toLocaleDateString function
+Implement Data caching - DONE
+
+Replace that time function with the inbuilt toLocaleDateString function - DONE
