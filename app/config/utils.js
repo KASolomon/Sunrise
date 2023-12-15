@@ -14,20 +14,17 @@ export const getUVIDescription = (UVIndex) => {
   }
 };
 
-export const getCommonTime = (dateTime, returnMins = false) => {
-  let fetchTime = dateTime;
-  const tIndex = fetchTime.indexOf("T");
-  fetchTime = fetchTime.slice(tIndex + 1, tIndex + 6);
-  const divTime = fetchTime.split(":");
-  const hour = divTime[0];
-  const minute = divTime[1];
 
-  return returnMins
-    ? hour > 12
-      ? `${hour - 12}:${minute} PM`
-      : `${fetchTime} AM`
-    : hour > 12
-    ? `${hour - 12} PM`
-    : `${hour < 10 ? hour[1] : hour} AM`;
-};
-
+export const trimApiData = (data, reservedKeys=[])=>{
+for (let forecast of data) {
+  for (let weatherItem in forecast.values) {
+    if (
+      !reservedKeys.includes(weatherItem) &&
+      forecast.values[weatherItem] == 0
+    ) {
+      delete forecast.values[weatherItem];
+    }
+  }
+}
+return data
+}

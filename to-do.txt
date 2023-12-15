@@ -35,3 +35,5 @@ Implement settings screen - DONE
 Implement Redux
 
 Implement Data caching with MMKV
+
+Replace that time function with the inbuilt toLocaleDateString function

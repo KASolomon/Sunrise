@@ -1,11 +1,11 @@
 import { Image } from "expo-image";
 import React from "react";
-import { useColorScheme } from "react-native";
 import { weatherCode } from "../config/weatherCodes";
+import { useColorScheme } from 'nativewind';
 
 export default function TomorrowWeatherIcon({ code, style = {} }) {
   const getIconSource = (code) => {
-    const colorScheme = useColorScheme();
+    const {colorScheme} = useColorScheme();
     switch (code) {
       case "sunrise":
         return colorScheme == "dark"
