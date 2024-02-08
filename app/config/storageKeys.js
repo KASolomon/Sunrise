@@ -1,4 +1,5 @@
 export default {
     daily : 'dailyForecast',
-    hourly : 'hourlyForecast'
+    hourly : 'hourlyForecast',
+    realtime : 'realtimeForecast'
 }

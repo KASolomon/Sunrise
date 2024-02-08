@@ -1,8 +1,15 @@
-//all api endpoints are based on openweathermap's api
+import { geocodingPass, weatherPass } from "./pass";
 
-export default {
-  currentWeather: "/weather",
-  forecast5: "/forecast",
+
+
+export default apiEndpoints = {
+  geocoding({ latitude, longitude }) {
+    return `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${geocodingPass}`;
+  },
+  realtimeWeather({ latitude, longitude }, unitStandard) {
+    return `https://api.tomorrow.io/v4/weather/realtime?location=${latitude},${longitude}&units=${unitStandard}&apikey=${weatherPass}`;
+  },
+  timedForecast({ latitude, longitude }, unitStandard) {
+    return `https://api.tomorrow.io/v4/weather/forecast?location=${latitude},${longitude}&units=${unitStandard}&apikey=${weatherPass}`;
+  },
 };
-
-export const genIconUrl = (iconCode) => `http://openweathermap.org/img/w/${iconCode}.png`;

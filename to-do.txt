@@ -10,7 +10,7 @@ Build hourly forecast component
     - Group hourly forecasts by day 
         - Tip : for current day, add the forecasts to the combined array as the values are extracted and displayed. Then group the others later. The hourly forecasts for the other days will be used for their respective days if fetching data fails on those days - DONE
     - Display horly forecast for all hours left in the current day - DONE
-    - Store the forecast data in redux store 
+    - Store the forecast data in redux store - DONE
     - Cache the data - DONE
     -
 
@@ -19,7 +19,7 @@ Build hourly forecast component
 Build daily forecast screen
 
     - Fetch data on screen mount (the DailyForecastScreen) - NOT NEEDED
-    - Send the data to redux store
+    - Send the data to redux store - DONE
     - Cache data - DONE
     - Display basic data for each day on the screen in a flatlist (date, general weather icon, avg temp) - DONE
         - On refresh, fetch data again - DONE
@@ -34,7 +34,7 @@ Implement settings screen - DONE
 
 Implement Redux
 
-- Settings screen :  Implement unit switching between imperial and metric
+- Settings screen :  Implement unit switching between imperial and metric - DONE
 
 Implement Data caching - DONE
 

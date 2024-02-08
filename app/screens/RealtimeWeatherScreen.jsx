@@ -18,39 +18,72 @@ import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
 import { getUVIDescription, trimApiData } from "../config/utils";
 import { weatherCode } from "../config/weatherCodes";
 import routes from "../config/routes";
-import pass, { geocodingPass } from "../config/pass";
+import { weatherPass, geocodingPass } from "../config/pass";
 import { getItem, storeItem } from "../config/secureStoreFxns";
 import storageKeys from "../config/storageKeys";
 import {
   reservedInfoDaily,
   reservedInfoHourly,
 } from "../config/reservedWeatherInfo";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { apiCallStarted } from "../store/apiMiddleware";
+import apiEndpoints from "../config/apiEndpoints";
+import sunriseStore from "../store/store";
+import {
+  cityAdded,
+  fetchUserCity,
+  getUnitStandard,
+  getUserCity,
+  getUserLocation,
+  readUserLocation,
+} from "../store/userData";
+import {
+  fetchRealtimeWeather,
+  realtimeUpdated,
+  getRealtimeWeather,
+  getFetchTime,
+} from "../store/realtime";
+import {
+  fetchTimeSpacedWeather,
+  getHourlyForecast,
+  timedWeatherAdded,
+} from "../store/timeSpacedWeather";
+
+import * as Localization from "expo-localization";
 
 export default function RealtimeWeatherScreen({ navigation }) {
-  const [weatherData, setWeatherData] = useState();
+  const storeDispatch = useDispatch();
+        const is24 = Localization.useCalendars()[0].uses24hourClock;
 
-  const [hourlyForecast, setHourlyForecast] = useState([]);
-  const [dailyForecast, setDailyForecast] = useState([]);
-  const [location, setLocation] = useState();
-  const [city, setCity] = useState();
+  //Select data from Redux store
+  const unitStandard = useSelector(getUnitStandard);
+  const realtimeValues = useSelector(getRealtimeWeather);
+  const city = useSelector(getUserCity);
+  const hourlyForecast = useSelector(getHourlyForecast)
+
+  const shouldCompute = Object.keys(realtimeValues).length > 0;
+
+const fetchTime = useSelector(getFetchTime);
+console.log(fetchTime)
   const [currentDate, setCurrentDate] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [up, setUp] = useState(false);
   const scrollRef = useRef(null);
 
-  const weatherErrorMsg = "🤔 That's strange.\n\nPlease pull to refresh.";
-
-  // Weather constants
-  const UVI = getUVIDescription(weatherData?.values.uvIndex);
-  const windSpeed = weatherData?.values.windSpeed.toString() + "m/s";
   const dark = true;
-  const feelTemp = Math.floor(weatherData?.values.temperatureApparent);
-  const temp = Math.floor(weatherData?.values.temperature);
-  const humidity = weatherData?.values.humidity.toString() + "%";
-  const visibility = Math.floor(weatherData?.values.visibility);
-  const pptProb =
-    Math.floor(weatherData?.values.precipitationProbability).toString() + "%";
-  const realtimeWeatherCode = weatherData?.values.weatherCode;
+
+  const weatherErrorMsg = "🤔 That's strange.\n\nPlease pull to refresh.";
+  // console.log(realtimeValues);
+  // Weather constants
+  let UVI,
+    windSpeed,
+    temp,
+    humidity,
+    visibility,
+    pptProb,
+    feelTemp,
+    realtimeWeatherCode,
+    time;
 
   //functions
   const getWeatherDescription = (code) => {
@@ -102,82 +135,82 @@ export default function RealtimeWeatherScreen({ navigation }) {
     }
   };
 
-  const getRealtimeWeather = async (location, pass, setWeatherData) => {
-    try {
-      const {
-        data: { data },
-      } = await axios.request({
-        url: `https://api.tomorrow.io/v4/weather/realtime?location=${location.latitude},${location.longitude}&units=metric&apikey=${pass}`,
-      });
-      data.time = new Date(data.time).toLocaleTimeString([], {
-        hour12: true,
-        hour: "numeric",
-        minute: "2-digit",
-      });
-      setWeatherData(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const getHourlyForecast = async (
-    location,
-    pass,
-    setHourlyForecast,
-    setDailyForecast
-  ) => {
-    try {
-      const { data } = await axios.request({
-        url: `https://api.tomorrow.io/v4/weather/forecast?location=${location.latitude},${location.longitude}&units=metric&apikey=${pass}`,
-      });
+  // const getRealtimeWeather = async (location, pass, setWeatherData) => {
+  //   try {
+  //     const {
+  //       data: { data },
+  //     } = await axios.request({
+  //       url: `https://api.tomorrow.io/v4/weather/realtime?location=${location.latitude},${location.longitude}&units=metric&apikey=${pass}`,
+  //     });
+  //     data.time = new Date(data.time).toLocaleTimeString([], {
+  //       hour12: true,
+  //       hour: "numeric",
+  //       minute: "2-digit",
+  //     });
+  //     setWeatherData(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  // const getHourlyForecast = async (
+  //   location,
+  //   pass,
+  //   setHourlyForecast,
+  //   setDailyForecast
+  // ) => {
+  //   try {
+  //     const { data } = await axios.request({
+  //       url: `https://api.tomorrow.io/v4/weather/forecast?location=${location.latitude},${location.longitude}&units=metric&apikey=${pass}`,
+  //     });
 
-      //Extract hourly forecasts for current day
-      const fullHForecast = data.timelines.hourly;
-      const today = new Date().toISOString();
-      const date = today.split("T")[0];
-      let currentHourly = [];
+  //     //Extract hourly forecasts for current day
+  //     const fullHForecast = data.timelines.hourly;
+  //     const today = new Date().toISOString();
+  //     const date = today.split("T")[0];
+  //     let currentHourly = [];
 
-      for (let forecast of fullHForecast) {
-        if (forecast.time.split("T")[0] == date) {
-          currentHourly.push(forecast);
-        } else {
-          break;
-        }
-      }
-      //send to redux store later
-      setHourlyForecast(currentHourly);
-      setDailyForecast(data.timelines.daily);
+  //     for (let forecast of fullHForecast) {
+  //       if (forecast.time.split("T")[0] == date) {
+  //         currentHourly.push(forecast);
+  //       } else {
+  //         break;
+  //       }
+  //     }
+  //     //send to redux store later
+  //     setHourlyForecast(currentHourly);
+  //     setDailyForecast(data.timelines.daily);
 
-      //trim and store forecast data
-      const hourlyForecast = trimApiData(
-        data.timelines.hourly,
-        reservedInfoHourly
-      );
+  //     //trim and store forecast data
+  //     const hourlyForecast = trimApiData(
+  //       data.timelines.hourly,
+  //       reservedInfoHourly
+  //     );
 
-      const dailyForecast = trimApiData(
-        data.timelines.daily,
-        reservedInfoDaily
-      );
+  //     const dailyForecast = trimApiData(
+  //       data.timelines.daily,
+  //       reservedInfoDaily
+  //     );
 
-      await storeItem(storageKeys.hourly, hourlyForecast);
-      await storeItem(storageKeys.daily, dailyForecast);
-    } catch (error) {
-      try {
-        //retrive cached forecast data
-        const hourlyForecast = await getItem(storageKeys.hourly);
-        const dailyForecast = await getItem(storageKeys.daily);
+  //     await storeItem(storageKeys.hourly, hourlyForecast);
+  //     await storeItem(storageKeys.daily, dailyForecast);
+  //   } catch (error) {
+  //     try {
+  //       //retrive cached forecast data
+  //       const hourlyForecast = await getItem(storageKeys.hourly);
+  //       const dailyForecast = await getItem(storageKeys.daily);
 
-        //store in state or redux store
-        setHourlyForecast(hourlyForecast);
-        setDailyForecast(dailyForecast);
-      } catch (error) {
-        console.log("Error fetching cached forecast ...", error);
-      }
-      console.log(
-        "Error fetching forecast data. Falling back to cache... ",
-        error
-      );
-    }
-  };
+  //       //store in state or redux store
+  //       setHourlyForecast(hourlyForecast);
+  //       setDailyForecast(dailyForecast);
+  //     } catch (error) {
+  //       console.log("Error fetching cached forecast ...", error);
+  //     }
+  //     console.log(
+  //       "Error fetching forecast data. Falling back to cache... ",
+  //       error
+  //     );
+  //   }
+  // };
 
   const getLocaleDate = () => {
     const date = new Date();
@@ -192,17 +225,11 @@ export default function RealtimeWeatherScreen({ navigation }) {
 
   const startFxns = async () => {
     setCurrentDate(getLocaleDate());
-    // const location = await getLocation(setLocation);
-    // await getRealtimeWeather(location, pass, setWeatherData);
-    // await getCity(location, geocodingPass, setCity);
-    // await getHourlyForecast(
-    //   location,
-    //   pass,
-    //   setHourlyForecast,
-    //   setDailyForecast
-    // );
-
-    // include a boolean in the current weather function to indicate whether weather is fetched or not. Show a loading indicator until weather data is fetched
+    const location = await readUserLocation(storeDispatch);
+    //Fetch the data
+    fetchUserCity(storeDispatch, location);
+    fetchRealtimeWeather(storeDispatch, location, unitStandard);
+    fetchTimeSpacedWeather(storeDispatch, location, unitStandard);
   };
 
   const handleRefresh = () => {
@@ -215,14 +242,56 @@ export default function RealtimeWeatherScreen({ navigation }) {
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    startFxns();
+    startFxns()
+    //await readUserLocation to get the location data for the api calls
+
     Animated.timing(opacity, {
       toValue: 1,
       useNativeDriver: true,
       duration: 500,
     }).start();
-  }, []);
+  }, [storeDispatch]);
 
+  
+      if (Object.keys(realtimeValues).length > 0) {
+        console.log("Effect 2");
+        const fetchDateTime = new Date(realtimeValues.time);
+        if (is24) {
+          time = fetchDateTime.toLocaleTimeString([], {
+            hourCycle: "h23",
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          console.log(`Fetch time : ${time}`);
+        } else {
+          time = fetchDateTime.toLocaleTimeString([], {
+            hourCycle: "h12",
+            hour12: true,
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+        }
+
+        UVI = getUVIDescription(realtimeValues?.values.uvIndex);
+        windSpeed = realtimeValues?.values.windSpeed.toString() + "m/s";
+        feelTemp = Math.floor(realtimeValues?.values.temperatureApparent);
+        temp = Math.floor(realtimeValues?.values.temperature);
+        humidity = realtimeValues?.values.humidity.toString() + "%";
+        visibility = Math.floor(realtimeValues?.values.visibility);
+        pptProb =
+          Math.floor(
+            realtimeValues?.values.precipitationProbability
+          ).toString() + "%";
+        realtimeWeatherCode = realtimeValues?.values.weatherCode;
+        console.log(realtimeWeatherCode);
+      } else {
+        console.log("Did not run");
+      }
+    
+
+  console.log(unitStandard);
+  // console.log(Object.keys(realtimeValues).length)
   return (
     <View className="bg-sky-300 flex-grow dark:bg-black ">
       <ScrollView
@@ -238,7 +307,7 @@ export default function RealtimeWeatherScreen({ navigation }) {
           style={{ opacity: opacity }}
           className=" bg-sky-300 flex-grow min-h-screen px-4 pt-16 dark:bg-black "
         >
-          {weatherData ? (
+          {Object.keys(realtimeValues).length > 0 ? (
             <>
               <View className="flex-grow justify-center">
                 <View className="bg-sky-400 dark:bg-slate-800 my-2  p-5 flex rounded-xl justify-center">
@@ -285,7 +354,7 @@ export default function RealtimeWeatherScreen({ navigation }) {
                     </AppText>
                   </View>
                   <AppText className={"text-center text-sm"}>
-                    as at {weatherData.time}
+                    as at {time}
                   </AppText>
                 </View>
                 <View
