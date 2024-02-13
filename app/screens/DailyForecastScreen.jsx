@@ -4,9 +4,11 @@ import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
 import AppText from "../components/AppText";
 import DailyForecast from "../components/DailyForecast";
 import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
+import { useSelector } from "react-redux";
+import { getDailyForecast } from "../store/timeSpacedWeather";
 
 export default function DailyForecastScreen({ route }) {
-  const forecast = route.params.dailyForecast;
+  const forecast = useSelector(getDailyForecast)
   const [refreshing, setRefreshing] = useState(false);
   const [fabVisible, setFabVisible] = useState(false);
   const listRef = useRef(null);

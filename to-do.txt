@@ -39,3 +39,8 @@ Implement Redux
 Implement Data caching - DONE
 
 Replace that time function with the inbuilt toLocaleDateString function - DONE
+
+
+- Values should display imperial units when unit standard is imperial
+
+- Time values should use the user's hour preference. Implement this on DailyForecastScreen, and RealtimeWeatherScreen

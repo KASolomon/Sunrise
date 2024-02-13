@@ -53,24 +53,20 @@ import * as Localization from "expo-localization";
 
 export default function RealtimeWeatherScreen({ navigation }) {
   const storeDispatch = useDispatch();
-        const is24 = Localization.useCalendars()[0].uses24hourClock;
+  const is24 = Localization.useCalendars()[0].uses24hourClock;
 
   //Select data from Redux store
   const unitStandard = useSelector(getUnitStandard);
   const realtimeValues = useSelector(getRealtimeWeather);
   const city = useSelector(getUserCity);
-  const hourlyForecast = useSelector(getHourlyForecast)
+  const hourlyForecast = useSelector(getHourlyForecast);
 
-  const shouldCompute = Object.keys(realtimeValues).length > 0;
-
-const fetchTime = useSelector(getFetchTime);
-console.log(fetchTime)
+  const fetchTime = useSelector(getFetchTime);
+  console.log(fetchTime);
   const [currentDate, setCurrentDate] = useState();
   const [refreshing, setRefreshing] = useState(false);
   const [up, setUp] = useState(false);
   const scrollRef = useRef(null);
-
-  const dark = true;
 
   const weatherErrorMsg = "🤔 That's strange.\n\nPlease pull to refresh.";
   // console.log(realtimeValues);
@@ -92,7 +88,7 @@ console.log(fetchTime)
   };
 
   const handleDailyForecast = () => {
-    navigation.navigate(routes.dailyForecast, { dailyForecast });
+    navigation.navigate(routes.dailyForecast);
   };
 
   const getLocation = async (setLocation) => {
@@ -242,7 +238,7 @@ console.log(fetchTime)
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    startFxns()
+    // startFxns();
     //await readUserLocation to get the location data for the api calls
 
     Animated.timing(opacity, {
@@ -252,46 +248,41 @@ console.log(fetchTime)
     }).start();
   }, [storeDispatch]);
 
-  
-      if (Object.keys(realtimeValues).length > 0) {
-        console.log("Effect 2");
-        const fetchDateTime = new Date(realtimeValues.time);
-        if (is24) {
-          time = fetchDateTime.toLocaleTimeString([], {
-            hourCycle: "h23",
-            hour: "2-digit",
-            minute: "2-digit",
-          });
+  if (Object.keys(realtimeValues).length > 0) {
+    const fetchDateTime = new Date(realtimeValues.time);
+    if (is24) {
+      time = fetchDateTime.toLocaleTimeString([], {
+        hourCycle: "h23",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } else {
+      time = fetchDateTime.toLocaleTimeString([], {
+        hourCycle: "h12",
+        hour12: true,
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
 
-          console.log(`Fetch time : ${time}`);
-        } else {
-          time = fetchDateTime.toLocaleTimeString([], {
-            hourCycle: "h12",
-            hour12: true,
-            hour: "2-digit",
-            minute: "2-digit",
-          });
-        }
+    UVI = getUVIDescription(realtimeValues?.values.uvIndex);
+    windSpeed = `${realtimeValues?.values.windSpeed.toString()}${
+      unitStandard === "metric" ? "m/s" : "mph"
+    }`;
+    feelTemp = Math.floor(realtimeValues?.values.temperatureApparent);
+    temp = Math.floor(realtimeValues?.values.temperature);
+    humidity = realtimeValues?.values.humidity.toString() + "%";
+    visibility = `${Math.floor(realtimeValues?.values.visibility).toString()}${
+      unitStandard === "metric" ? "km" : " mi"
+    }`;
 
-        UVI = getUVIDescription(realtimeValues?.values.uvIndex);
-        windSpeed = realtimeValues?.values.windSpeed.toString() + "m/s";
-        feelTemp = Math.floor(realtimeValues?.values.temperatureApparent);
-        temp = Math.floor(realtimeValues?.values.temperature);
-        humidity = realtimeValues?.values.humidity.toString() + "%";
-        visibility = Math.floor(realtimeValues?.values.visibility);
-        pptProb =
-          Math.floor(
-            realtimeValues?.values.precipitationProbability
-          ).toString() + "%";
-        realtimeWeatherCode = realtimeValues?.values.weatherCode;
-        console.log(realtimeWeatherCode);
-      } else {
-        console.log("Did not run");
-      }
-    
+    pptProb =
+      Math.floor(realtimeValues?.values.precipitationProbability).toString() +
+      "%";
+    realtimeWeatherCode = realtimeValues?.values.weatherCode;
+  }
 
-  console.log(unitStandard);
-  // console.log(Object.keys(realtimeValues).length)
+  console.log("Windspeed : ", windSpeed);
   return (
     <View className="bg-sky-300 flex-grow dark:bg-black ">
       <ScrollView
@@ -403,7 +394,7 @@ console.log(fetchTime)
                       </View>
 
                       <AppText className="p-2" style={{ alignSelf: "center" }}>
-                        {visibility} km
+                        {visibility}
                       </AppText>
                     </View>
                     <View>
