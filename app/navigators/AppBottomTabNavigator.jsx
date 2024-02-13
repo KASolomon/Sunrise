@@ -16,9 +16,9 @@ const  { colors} = useTheme()
     <AppBottomTab.Navigator
     initialRouteName={routes.homeStackNav}
       screenOptions={{
-        tabBarActiveTintColor: "#0284c7",
-        tabBarStyle :{backgroundColor :  colors.text, height : 70},
-        tabBarLabelStyle :{ marginBottom : 15, fontSize : 15},
+        tabBarActiveTintColor: "white",
+        tabBarStyle :{ height : 70},
+        tabBarLabelStyle :{ marginBottom : 15, fontSize : 15,},
       
       }}
     >

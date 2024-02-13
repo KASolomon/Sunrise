@@ -5,7 +5,8 @@ import { View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import AppText from "../components/AppText";
 import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
-import { getUnitStandard, toggleUnit } from "../store/userData";
+import { getUnitStandard, getUserLocation, toggleUnit } from "../store/userData";
+import { fetchRealtimeWeather } from "../store/realtime";
 
 export default function SettingsScreen() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -13,9 +14,12 @@ export default function SettingsScreen() {
 
   const sunriseDispatch = useDispatch();
   const unit_store = useSelector(getUnitStandard);
+  const user_location = useSelector(getUserLocation);
+
 
   const handleUnitChange = (unit) => {
     sunriseDispatch(toggleUnit(unit));
+    fetchRealtimeWeather(sunriseDispatch, user_location, unit);
   };
 
   return (
