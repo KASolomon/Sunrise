@@ -1,10 +1,10 @@
 import { FAB } from "@rneui/base";
 import React, { useRef, useState } from "react";
 import { FlatList, RefreshControl, StyleSheet, View } from "react-native";
+import { useSelector } from "react-redux";
 import AppText from "../components/AppText";
 import DailyForecast from "../components/DailyForecast";
 import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
-import { useSelector } from "react-redux";
 import { getDailyForecast } from "../store/timeSpacedWeather";
 
 export default function DailyForecastScreen({ route }) {

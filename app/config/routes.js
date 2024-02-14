@@ -3,5 +3,6 @@ export default {
     dailyForecast : 'dailyForecastScreen',
     settings : 'settingsScreen',
     homeStackNav : 'homeStackNavigator',
-    settingsStackNav : 'settingsStackNavigator'
+    settingsStackNav : 'settingsStackNavigator',
+    tomorrowIO: 'webviewScreen'
 }

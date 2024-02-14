@@ -1,11 +1,10 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import routes from "../config/routes";
 import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useTheme } from "@react-navigation/native";
+import React from "react";
+import routes from "../config/routes";
 import HomeStackNavigator from "./HomeStackNavigator";
 import SettingsStackNavigator from "./SettingsStackNavigator";
-import { useTheme } from "@react-navigation/native";
 
 export default function AppBottomTabNavigator() {
   const AppBottomTab = createBottomTabNavigator();

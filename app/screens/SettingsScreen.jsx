@@ -1,21 +1,29 @@
 import { Button, Switch } from "@rneui/base";
 import { useColorScheme } from "nativewind";
 import React, { useState } from "react";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import AppText from "../components/AppText";
 import TomorrowWeatherIcon from "../components/TomorrowWeatherIcon";
-import { getUnitStandard, getUserLocation, toggleUnit } from "../store/userData";
+import routes from "../config/routes";
 import { fetchRealtimeWeather } from "../store/realtime";
+import {
+  getUnitStandard,
+  getUserLocation,
+  toggleUnit,
+} from "../store/userData";
 
-export default function SettingsScreen() {
+export default function SettingsScreen({navigation}) {
   const { colorScheme, toggleColorScheme } = useColorScheme();
-  const [isDark, setIsDark] = useState(colorScheme == "dark" ? true : false);
+  const [colorSchemeState, setColorSchemeState] = useState(colorScheme);
+  const [isDark, setIsDark] = useState(
+    colorSchemeState == "dark" ? true : false
+  );
 
+  
   const sunriseDispatch = useDispatch();
   const unit_store = useSelector(getUnitStandard);
   const user_location = useSelector(getUserLocation);
-
 
   const handleUnitChange = (unit) => {
     sunriseDispatch(toggleUnit(unit));
@@ -45,11 +53,15 @@ export default function SettingsScreen() {
 
             backgroundColor: "#00000000",
           }}
-          buttonStyle={unit_store === 'imperial' ? {
-            borderRadius: 25,
-            borderWidth: 2,
-            backgroundColor: "#00000000",
-          } : { backgroundColor: "#1e3a8a", borderColor: "#1d4ed8" }}
+          buttonStyle={
+            unit_store === "imperial"
+              ? {
+                  borderRadius: 25,
+                  borderWidth: 2,
+                  backgroundColor: "#00000000",
+                }
+              : { backgroundColor: "#1e3a8a", borderColor: "#1d4ed8" }
+          }
           onPress={() => {
             handleUnitChange("metric");
           }}
@@ -64,11 +76,15 @@ export default function SettingsScreen() {
 
             backgroundColor: "#00000000",
           }}
-          buttonStyle={unit_store === 'metric' ? {
-            borderRadius: 25,
-            borderWidth: 2,
-            backgroundColor: "#00000000",
-          } : { backgroundColor: "#1e3a8a", borderColor: "#1d4ed8" }}
+          buttonStyle={
+            unit_store === "metric"
+              ? {
+                  borderRadius: 25,
+                  borderWidth: 2,
+                  backgroundColor: "#00000000",
+                }
+              : { backgroundColor: "#1e3a8a", borderColor: "#1d4ed8" }
+          }
           onPress={() => {
             handleUnitChange("imperial");
           }}
@@ -78,10 +94,13 @@ export default function SettingsScreen() {
       </View>
       <View className="bg-sky-400  p-4 dark:bg-slate-800 m-4 rounded-xl">
         <AppText className="mr-8">Icon Credit</AppText>
+        <Pressable onPress={()=>navigation.navigate(routes.tomorrowIO)} >
+
         <TomorrowWeatherIcon
           code={"credit"}
           style={{ width: 300, height: 100, alignSelf: "center" }}
         />
+        </Pressable>
       </View>
     </View>
   );

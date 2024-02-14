@@ -1,11 +1,11 @@
-import React from "react";
 import {
   TransitionPresets,
   createStackNavigator,
 } from "@react-navigation/stack";
+import React from "react";
 import routes from "../config/routes";
-import RealtimeWeatherScreen from "../screens/RealtimeWeatherScreen";
 import DailyForecastScreen from "../screens/DailyForecastScreen";
+import RealtimeWeatherScreen from "../screens/RealtimeWeatherScreen";
 
 export default function HomeStackNavigator() {
   const HomeStack = createStackNavigator();

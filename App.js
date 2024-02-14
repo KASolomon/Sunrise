@@ -11,6 +11,7 @@ import { Provider } from "react-redux";
 import AppBottomTabNavigator from "./app/navigators/AppBottomTabNavigator";
 import sunriseStore from "./app/store/store";
 import { useColorScheme } from 'nativewind';
+import WebviewScreen from "./app/screens/WebviewScreen";
 
 export default function App() {
   const { colorScheme} = useColorScheme()

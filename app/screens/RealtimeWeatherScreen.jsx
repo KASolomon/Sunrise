@@ -78,7 +78,7 @@ export default function RealtimeWeatherScreen({ navigation }) {
 
   const handleRefresh = () => {
     setRefreshing(true);
-    // startFxns();
+    startFxns();
     setTimeout(() => {
       setRefreshing(false);
     }, 3000);
@@ -86,7 +86,7 @@ export default function RealtimeWeatherScreen({ navigation }) {
   const opacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // startFxns();
+    startFxns();
     //await readUserLocation to get the location data for the api calls
 
     Animated.timing(opacity, {
